@@ -86,6 +86,30 @@
   line-height: 1.85;
 }
 
+/* ── Obsidian [[双链]] 样式 ── */
+
+/* 已解析的内部链接 */
+.sl-markdown-content .internal-link {
+  color: var(--nord9);                       /* frost 蓝 */
+  background: color-mix(in srgb, var(--nord9) 10%, transparent);
+  border-radius: 3px;
+  padding: 0 0.2em;
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s;
+}
+.sl-markdown-content .internal-link:hover {
+  background: color-mix(in srgb, var(--nord9) 20%, transparent);
+  color: var(--nord8);
+}
+
+/* 断链（目标页面不存在） */
+.sl-markdown-content .internal-link.broken {
+  color: var(--nord11);                      /* aurora 红 */
+  background: color-mix(in srgb, var(--nord11) 10%, transparent);
+  text-decoration: line-through;
+  cursor: not-allowed;
+}
+
 /* ── 侧边栏激活项 ── */
 [aria-current='page'] {
   background-color: color-mix(in srgb, var(--nord10) 20%, transparent) !important;

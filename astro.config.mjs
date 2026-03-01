@@ -4,6 +4,7 @@ import starlight from '@astrojs/starlight';
 import keystatic from '@keystatic/astro';
 import cloudflare from '@astrojs/cloudflare';
 import react from '@astrojs/react';
+import { wikiLinksIntegration } from './src/integrations/wiki-links.mjs';
 
 export default defineConfig({
   site: 'https://personal-blog-cn.pages.dev',
@@ -29,7 +30,12 @@ export default defineConfig({
       pagination: true,
       lastUpdated: true,
       social: [],
+      components: {
+        // 在正文下方注入「反向链接」面板
+        ContentPanel: './src/components/overrides/ContentPanel.astro',
+      },
     }),
+    wikiLinksIntegration(),   // Obsidian [[双链]] + 反向链接索引
     keystatic(),
     react(),
   ],

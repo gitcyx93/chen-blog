@@ -1,0 +1,82 @@
+---
+/**
+ * 反向链接面板
+ * 显示「哪些笔记链接到了当前页面」
+ * backlinks.json 由 wiki-links integration 在构建时自动生成
+ */
+import backlinksData from '../data/backlinks.json';
+
+const currentPath = Astro.url.pathname;
+// 统一加尾部斜杠后再查找
+const key = currentPath.endsWith('/') ? currentPath : `${currentPath}/`;
+const backlinks: { url: string; title: string }[] = (backlinksData as Record<string, { url: string; title: string }[]>)[key] ?? [];
+---
+
+{backlinks.length > 0 && (
+  <aside class="backlinks-panel">
+    <h2 class="backlinks-heading">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+           fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+           stroke-linejoin="round" aria-hidden="true">
+        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+      </svg>
+      反向链接
+    </h2>
+    <ul class="backlinks-list">
+      {backlinks.map(link => (
+        <li>
+          <a href={link.url} class="backlink-item">
+            {link.title}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </aside>
+)}
+
+<style>
+  .backlinks-panel {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--sl-color-gray-5);
+  }
+
+  .backlinks-heading {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: var(--sl-text-sm);
+    font-weight: 600;
+    color: var(--sl-color-gray-2);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.75rem;
+  }
+
+  .backlinks-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .backlink-item {
+    display: inline-block;
+    padding: 0.2rem 0.65rem;
+    background: color-mix(in srgb, var(--nord15) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--nord15) 35%, transparent);
+    border-radius: 4px;
+    color: var(--nord15);
+    font-size: var(--sl-text-sm);
+    text-decoration: none;
+    transition: background 0.15s, border-color 0.15s;
+  }
+
+  .backlink-item:hover {
+    background: color-mix(in srgb, var(--nord15) 22%, transparent);
+    border-color: var(--nord15);
+  }
+</style>

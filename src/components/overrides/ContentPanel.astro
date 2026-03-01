@@ -1,0 +1,14 @@
+---
+/**
+ * 覆盖 Starlight 的 ContentPanel 组件
+ * 在正文内容下方注入 BacklinksPanel（反向链接）
+ */
+import Default from '@astrojs/starlight/components/ContentPanel.astro';
+import BacklinksPanel from '../BacklinksPanel.astro';
+---
+
+<Default {...Astro.props}>
+  <slot />
+</Default>
+
+<BacklinksPanel />
