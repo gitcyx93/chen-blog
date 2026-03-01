@@ -1,0 +1,46 @@
+---
+export const prerender = true;
+import SiteLayout from '../layouts/SiteLayout.astro';
+---
+
+<SiteLayout title="联系 — 陈的笔记" description="写信给我，不用注册不用关注。">
+  <div class="page">
+    <h1>联系</h1>
+    <p class="desc">不用注册，不用关注，直接写信就行。</p>
+    <a href="mailto:hi@chen.page" class="mail-link">hi@chen.page →</a>
+  </div>
+</SiteLayout>
+
+<style>
+  .page {
+    padding: 5rem 0 4rem;
+  }
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #eceff4;
+    margin-bottom: 1.25rem;
+    letter-spacing: -0.01em;
+  }
+
+  .desc {
+    color: #d8dee9;
+    font-size: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .mail-link {
+    display: inline-block;
+    color: #81a1c1;
+    font-size: 1rem;
+    text-decoration: none;
+    border-bottom: 1px solid #4c566a;
+    padding-bottom: 2px;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .mail-link:hover {
+    color: #88c0d0;
+    border-color: #88c0d0;
+  }
+</style>

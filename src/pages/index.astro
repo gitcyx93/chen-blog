@@ -1,0 +1,124 @@
+---
+export const prerender = true;
+import SiteLayout from '../layouts/SiteLayout.astro';
+
+const cards = [
+  {
+    title: '文章',
+    desc: '长文，值得反复阅读。',
+    href: '/blog',
+  },
+  {
+    title: '笔记',
+    desc: '日常碎片与即时观察。',
+    href: '/psychology/human-vs-ai/',
+  },
+  {
+    title: '工具箱',
+    desc: '正在用的工具推荐。',
+    href: '/tools',
+  },
+];
+---
+
+<SiteLayout title="陈的笔记">
+  <div class="hero">
+    <h1>你好，人类。<br />欢迎你选择走进来。</h1>
+
+    <p class="sub">
+      这里不用登录，没有广告，没有算法，没有审查。你不是产品。
+      <a href="/about">了解这个站点 →</a>
+    </p>
+
+    <p class="intro">逛逛看。</p>
+  </div>
+
+  <div class="cards">
+    {cards.map(card => (
+      <a href={card.href} class="card">
+        <span class="card-title">{card.title}</span>
+        <span class="card-desc">{card.desc}</span>
+      </a>
+    ))}
+  </div>
+</SiteLayout>
+
+<style>
+  /* ── Hero ── */
+  .hero {
+    padding: 7rem 0 4rem;
+  }
+
+  h1 {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 700;
+    color: #eceff4;   /* nord6 */
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    margin-bottom: 1.75rem;
+  }
+
+  .sub {
+    font-size: 1rem;
+    color: #d8dee9;   /* nord4 */
+    line-height: 1.75;
+    max-width: 520px;
+  }
+
+  .sub a {
+    color: #81a1c1;   /* nord9 */
+    text-decoration: none;
+    margin-left: 0.4em;
+    white-space: nowrap;
+    transition: color 0.15s;
+  }
+  .sub a:hover { color: #88c0d0; }
+
+  .intro {
+    margin-top: 2.5rem;
+    font-size: 1rem;
+    color: #4c566a;   /* nord3 */
+    letter-spacing: 0.05em;
+  }
+
+  /* ── Cards ── */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+    padding-bottom: 2rem;
+  }
+
+  @media (max-width: 600px) {
+    .cards { grid-template-columns: 1fr; }
+  }
+
+  .card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    padding: 1.75rem;
+    background: #3b4252;   /* nord1 */
+    border: 1px solid #434c5e;  /* nord2 */
+    border-radius: 10px;
+    text-decoration: none;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .card:hover {
+    border-color: #81a1c1;   /* nord9 */
+    background: #434c5e;     /* nord2 */
+  }
+
+  .card-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #88c0d0;   /* nord8 */
+  }
+
+  .card-desc {
+    font-size: 0.875rem;
+    color: #4c566a;   /* nord3 */
+    line-height: 1.6;
+  }
+</style>

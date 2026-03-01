@@ -1,0 +1,42 @@
+---
+export const prerender = true;
+import SiteLayout from '../layouts/SiteLayout.astro';
+---
+
+<SiteLayout title="文章 — 陈的笔记" description="长文，值得反复阅读的内容。">
+  <div class="page">
+    <h1>文章</h1>
+    <p class="sub">长文板块建设中。现有内容暂时收录在「笔记」区。</p>
+    <a href="/psychology/human-vs-ai/" class="link">去看笔记 →</a>
+  </div>
+</SiteLayout>
+
+<style>
+  .page {
+    padding: 5rem 0 4rem;
+  }
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #eceff4;
+    margin-bottom: 1.25rem;
+    letter-spacing: -0.01em;
+  }
+
+  .sub {
+    color: #d8dee9;
+    font-size: 1rem;
+    margin-bottom: 1.75rem;
+    max-width: 480px;
+    line-height: 1.75;
+  }
+
+  .link {
+    color: #81a1c1;
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: color 0.15s;
+  }
+  .link:hover { color: #88c0d0; }
+</style>

@@ -1,0 +1,30 @@
+---
+export const prerender = true;
+import SiteLayout from '../layouts/SiteLayout.astro';
+---
+
+<SiteLayout title="工具箱 — 陈的笔记" description="正在用的工具推荐。">
+  <div class="page">
+    <h1>工具箱</h1>
+    <p class="sub">正在整理，稍后上线。</p>
+  </div>
+</SiteLayout>
+
+<style>
+  .page {
+    padding: 5rem 0 4rem;
+  }
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #eceff4;
+    margin-bottom: 1rem;
+    letter-spacing: -0.01em;
+  }
+
+  .sub {
+    color: #4c566a;
+    font-size: 1rem;
+  }
+</style>

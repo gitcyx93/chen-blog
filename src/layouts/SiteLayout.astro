@@ -1,0 +1,147 @@
+---
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = '一个关于心理学、投资、学习与思考的个人站点' } = Astro.props;
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const currentPath = Astro.url.pathname;
+
+const navLinks = [
+  { href: '/blog',    label: '文章' },
+  { href: '/psychology/human-vs-ai/', label: '笔记' },
+  { href: '/tools',   label: '工具箱' },
+  { href: '/about',   label: '关于' },
+  { href: '/contact', label: '联系' },
+];
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <title>{title}</title>
+  </head>
+
+  <body>
+    <header>
+      <nav>
+        <a href="/" class="brand">陈的笔记</a>
+        <div class="nav-links">
+          {navLinks.map(link => (
+            <a
+              href={link.href}
+              class:list={['nav-link', { active: currentPath.startsWith(link.href) && link.href !== '/' }]}
+            >
+              {link.label}
+            </a>
+          ))}
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <slot />
+    </main>
+
+    <footer>
+      <p>写于2026年，AI时代的前夜。</p>
+    </footer>
+  </body>
+</html>
+
+<style>
+  /* Nord 色板 */
+  :root {
+    --nord0: #2e3440;
+    --nord1: #3b4252;
+    --nord2: #434c5e;
+    --nord3: #4c566a;
+    --nord4: #d8dee9;
+    --nord5: #e5e9f0;
+    --nord6: #eceff4;
+    --nord8: #88c0d0;
+    --nord9: #81a1c1;
+    --nord10: #5e81ac;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html, body {
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB",
+      "Microsoft YaHei", sans-serif;
+    background: var(--nord0);
+    color: var(--nord4);
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── 导航 ── */
+  header {
+    border-bottom: 1px solid var(--nord2);
+  }
+
+  nav {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .brand {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--nord6);
+    text-decoration: none;
+    letter-spacing: 0.02em;
+    transition: opacity 0.15s;
+  }
+  .brand:hover { opacity: 0.7; }
+
+  .nav-links {
+    display: flex;
+    gap: 1.75rem;
+  }
+
+  .nav-link {
+    font-size: 0.875rem;
+    color: var(--nord3);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  .nav-link:hover,
+  .nav-link.active {
+    color: var(--nord8);
+  }
+
+  /* ── 主内容 ── */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+
+  /* ── 页脚 ── */
+  footer {
+    border-top: 1px solid var(--nord2);
+    margin-top: 6rem;
+    padding: 2rem;
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--nord3);
+  }
+</style>
