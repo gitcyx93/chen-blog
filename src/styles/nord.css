@@ -1,0 +1,94 @@
+/* ===================================================
+   Obsidian Nord 配色 — Starlight CSS 变量覆盖
+   完全沿用用户 Obsidian Nord 主题的原始颜色值
+   =================================================== */
+
+/* Nord 色板 */
+:root {
+  /* Polar Night */
+  --nord0: #2e3440;
+  --nord1: #3b4252;
+  --nord2: #434c5e;
+  --nord3: #4c566a;
+  /* Snow Storm */
+  --nord4: #d8dee9;
+  --nord5: #e5e9f0;
+  --nord6: #eceff4;
+  /* Frost */
+  --nord7: #8fbcbb;
+  --nord8: #88c0d0;
+  --nord9: #81a1c1;
+  --nord10: #5e81ac;
+  /* Aurora */
+  --nord11: #bf616a; /* red    — H1 */
+  --nord12: #d08770; /* orange */
+  --nord13: #ebcb8b; /* yellow — H2 */
+  --nord14: #a3be8c; /* green  — H3 */
+  --nord15: #b48ead; /* purple — links */
+}
+
+/* Starlight 暗色主题覆盖（用户默认暗色） */
+:root[data-theme='dark'],
+:root {
+  --sl-color-accent-low:  var(--nord10); /* #5e81ac 深蓝 */
+  --sl-color-accent:      var(--nord8);  /* #88c0d0 冰蓝 主色 */
+  --sl-color-accent-high: var(--nord7);  /* #8fbcbb 青色 */
+
+  --sl-color-white:  var(--nord6);  /* #eceff4 */
+  --sl-color-gray-1: var(--nord5);  /* #e5e9f0 */
+  --sl-color-gray-2: var(--nord4);  /* #d8dee9 */
+  --sl-color-gray-3: var(--nord3);  /* #4c566a */
+  --sl-color-gray-4: var(--nord2);  /* #434c5e */
+  --sl-color-gray-5: var(--nord1);  /* #3b4252 */
+  --sl-color-gray-6: var(--nord0);  /* #2e3440 */
+  --sl-color-black:  #242831;
+}
+
+/* ── 正文标题颜色（复刻 Obsidian Nord）── */
+.sl-markdown-content h1 { color: var(--nord11); } /* red    */
+.sl-markdown-content h2 { color: var(--nord13); } /* yellow */
+.sl-markdown-content h3 { color: var(--nord14); } /* green  */
+.sl-markdown-content h4 { color: var(--nord15); } /* purple */
+.sl-markdown-content h5 { color: var(--nord7);  } /* teal   */
+.sl-markdown-content h6 { color: var(--nord9);  } /* blue   */
+
+/* ── 链接 ── */
+.sl-markdown-content a {
+  color: var(--nord15);           /* purple，与 Obsidian Nord 一致 */
+  text-decoration-color: transparent;
+  transition: color 0.15s, text-decoration-color 0.15s;
+}
+.sl-markdown-content a:hover {
+  color: var(--nord9);
+  text-decoration-color: var(--nord9);
+}
+
+/* ── 引用块 ── */
+.sl-markdown-content blockquote {
+  border-inline-start-color: var(--nord10);
+  background: color-mix(in srgb, var(--nord1) 60%, transparent);
+}
+
+/* ── 行内代码 ── */
+.sl-markdown-content :not(pre) > code {
+  color: var(--nord7);
+  background: var(--nord1);
+}
+
+/* ── 粗体 ── */
+.sl-markdown-content strong {
+  color: var(--nord6);
+}
+
+/* ── 字体：正文用衬线，提升阅读舒适度 ── */
+.sl-markdown-content {
+  font-size: 1rem;
+  line-height: 1.85;
+}
+
+/* ── 侧边栏激活项 ── */
+[aria-current='page'] {
+  background-color: color-mix(in srgb, var(--nord10) 20%, transparent) !important;
+  color: var(--nord8) !important;
+  border-inline-start-color: var(--nord8) !important;
+}
