@@ -1,6 +1,7 @@
 ---
 title: "Goals Toolkit：Huberman 的 13 个目标设定工具"
 description: "Andrew Huberman 总结的 13 个循证目标设定工具，涵盖目标选择、视觉化、奖励机制与昼夜节律。"
+cover: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=1200&h=400&fit=crop&q=80"
 ---
 
 
