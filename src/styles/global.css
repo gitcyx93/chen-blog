@@ -119,6 +119,25 @@ body {
   margin: 2.5em 0;
 }
 
+/* 双链样式 */
+.wiki-link {
+  color: #374151;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: #9ca3af;
+  transition: text-decoration-color 0.2s;
+}
+
+.wiki-link:hover {
+  text-decoration-color: #374151;
+}
+
+/* 指向不存在文章的双链，显示红色提示 */
+.wiki-link-new {
+  color: #dc2626;
+  text-decoration-style: dashed;
+}
+
 /* 图片灯箱效果 */
 .lightbox-overlay {
   display: none;

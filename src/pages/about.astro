@@ -1,38 +1,12 @@
 ---
 export const prerender = true;
-import SiteLayout from '../layouts/SiteLayout.astro';
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
 ---
 
-<SiteLayout title="关于 — 陈的笔记" description="这个站点是什么，以及为什么存在。">
-  <div class="page">
-    <h1>关于这个站点</h1>
-    <div class="body">
-      <p>内容建设中。</p>
-    </div>
-  </div>
-</SiteLayout>
-
-<style>
-  .page {
-    padding: 5rem 0 4rem;
-    max-width: 640px;
-  }
-
-  h1 {
-    font-size: 2rem;
-    font-weight: 700;
-    color: #eceff4;
-    margin-bottom: 2.5rem;
-    letter-spacing: -0.01em;
-  }
-
-  .body {
-    color: #d8dee9;
-    line-height: 1.875;
-    font-size: 1.0625rem;
-  }
-
-  .body p {
-    margin-bottom: 1.25rem;
-  }
-</style>
+<StarlightPage
+  frontmatter={{ title: '关于', description: '这个站点是什么，以及为什么存在。', tableOfContents: false }}
+  hasSidebar={false}
+  headings={[]}
+>
+  <p>内容建设中。</p>
+</StarlightPage>
