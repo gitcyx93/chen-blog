@@ -32,9 +32,9 @@ function articleSchema() {
         itemLabel: (props) => props.value,
       }
     ),
-    cover: fields.text({
-      label: '封面图片路径',
-      description: '如 /images/my-photo.jpg，图片请放到 public/images/ 目录',
+    cover: fields.url({
+      label: '封面图片 URL',
+      description: '粘贴 Unsplash 图片链接，末尾加 ?w=1200&h=400&fit=crop&q=80',
     }),
     content: fields.mdx({
       label: '正文',
