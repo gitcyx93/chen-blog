@@ -38,7 +38,9 @@ const cards = [
 </StarlightPage>
 
 <style>
-  /* 隐藏 Starlight 自动生成的页面标题和 hero 分隔线 */
+  /* 隐藏 Starlight 自动生成的顶栏、页面标题和 hero 分隔线 */
+  :global(header.header) { display: none; }
+  :global(.main-frame) { padding-top: 0 !important; }
   :global(#_top) { display: none; }
   :global(.sl-markdown-content > hr:first-of-type) { display: none; }
 
