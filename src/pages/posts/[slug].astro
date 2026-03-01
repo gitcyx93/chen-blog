@@ -1,0 +1,77 @@
+---
+import { getCollection, getEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts');
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await post.render();
+
+function formatDate(date: Date) {
+  return date.toLocaleDateString('zh-CN', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+}
+---
+
+<BaseLayout
+  title={post.data.title}
+  description={post.data.description}
+  image={post.data.cover}
+>
+  <article>
+    <!-- 文章头部 -->
+    <header class="mb-8">
+      <div class="flex items-center gap-3 text-sm text-gray-400 mb-3">
+        <time datetime={post.data.date.toISOString()}>
+          {formatDate(post.data.date)}
+        </time>
+        {post.data.tags && post.data.tags.length > 0 && (
+          <>
+            <span>·</span>
+            <div class="flex gap-2">
+              {post.data.tags.map((tag) => (
+                <span class="text-gray-400">#{tag}</span>
+              ))}
+            </div>
+          </>
+        )}
+      </div>
+      <h1 class="text-2xl font-bold text-gray-900 leading-tight">
+        {post.data.title}
+      </h1>
+      {post.data.cover && (
+        <div class="aspect-video overflow-hidden rounded-lg mt-6 bg-gray-100">
+          <img
+            src={post.data.cover}
+            alt={post.data.title}
+            class="w-full h-full object-cover"
+          />
+        </div>
+      )}
+    </header>
+
+    <!-- 正文 -->
+    <div class="prose">
+      <Content />
+    </div>
+
+    <!-- 底部导航 -->
+    <footer class="mt-12 pt-6 border-t border-gray-100">
+      <a
+        href="/"
+        class="text-sm text-gray-400 hover:text-gray-700 transition-colors inline-flex items-center gap-1"
+      >
+        ← 返回首页
+      </a>
+    </footer>
+  </article>
+</BaseLayout>

@@ -1,0 +1,61 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const allPosts = await getCollection('posts');
+const posts = allPosts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+function formatDate(date: Date) {
+  return date.toLocaleDateString('zh-CN', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+}
+---
+
+<BaseLayout title="陈的笔记" description="一个关于心理学、投资、学习与思考的个人博客">
+  <div class="mb-10">
+    <h1 class="text-2xl font-bold text-gray-900 mb-2">陈的笔记</h1>
+    <p class="text-gray-500 text-sm">关注心理学、投资、学习方法、健康与国际关系</p>
+  </div>
+
+  {posts.length === 0 ? (
+    <p class="text-gray-400 text-sm">还没有文章，敬请期待。</p>
+  ) : (
+    <ul class="space-y-10">
+      {posts.map((post) => (
+        <li>
+          <a href={`/posts/${post.slug}`} class="group block">
+            {post.data.cover && (
+              <div class="aspect-video overflow-hidden rounded-lg mb-4 bg-gray-100">
+                <img
+                  src={post.data.cover}
+                  alt={post.data.title}
+                  loading="lazy"
+                  class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+                />
+              </div>
+            )}
+            <div>
+              <time class="text-xs text-gray-400" datetime={post.data.date.toISOString()}>
+                {formatDate(post.data.date)}
+              </time>
+              {post.data.tags && post.data.tags.length > 0 && (
+                <span class="ml-2 text-xs text-gray-400">
+                  {post.data.tags.map((tag) => `#${tag}`).join(' ')}
+                </span>
+              )}
+              <h2 class="text-lg font-semibold text-gray-900 mt-1 mb-1.5 group-hover:underline underline-offset-2">
+                {post.data.title}
+              </h2>
+              <p class="text-gray-500 text-sm leading-relaxed line-clamp-2">
+                {post.data.description}
+              </p>
+            </div>
+          </a>
+        </li>
+      ))}
+    </ul>
+  )}
+</BaseLayout>

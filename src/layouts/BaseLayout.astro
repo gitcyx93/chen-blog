@@ -1,0 +1,89 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  image?: string;
+}
+
+const { title, description = '一个关于心理学、投资、学习与思考的个人博客', image } = Astro.props;
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    {image && <meta property="og:image" content={new URL(image, Astro.site)} />}
+
+    <title>{title}</title>
+  </head>
+
+  <body class="bg-white text-gray-900">
+    <!-- 导航 -->
+    <header class="border-b border-gray-100">
+      <nav class="mx-auto max-w-[720px] px-6 py-4 flex items-center justify-between">
+        <a href="/" class="text-base font-semibold tracking-tight hover:opacity-70 transition-opacity">
+          陈的笔记
+        </a>
+        <div class="flex gap-5 text-sm text-gray-500">
+          <a href="/" class="hover:text-gray-900 transition-colors">首页</a>
+          <a href="/about" class="hover:text-gray-900 transition-colors">关于</a>
+        </div>
+      </nav>
+    </header>
+
+    <!-- 主内容 -->
+    <main class="mx-auto max-w-[720px] px-6 py-10">
+      <slot />
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="border-t border-gray-100 mt-16">
+      <div class="mx-auto max-w-[720px] px-6 py-6 text-sm text-gray-400 text-center">
+        © {new Date().getFullYear()} 陈的笔记 · 用文字对抗算法消费
+      </div>
+    </footer>
+
+    <!-- 图片灯箱 -->
+    <div class="lightbox-overlay" id="lightbox">
+      <img id="lightbox-img" src="" alt="" />
+    </div>
+
+    <script>
+      // 图片点击放大
+      const lightbox = document.getElementById('lightbox');
+      const lightboxImg = document.getElementById('lightbox-img') as HTMLImageElement;
+
+      document.querySelectorAll('.prose img').forEach((img) => {
+        img.addEventListener('click', () => {
+          const src = (img as HTMLImageElement).src;
+          const alt = (img as HTMLImageElement).alt;
+          if (lightboxImg && lightbox) {
+            lightboxImg.src = src;
+            lightboxImg.alt = alt;
+            lightbox.classList.add('active');
+          }
+        });
+      });
+
+      lightbox?.addEventListener('click', () => {
+        lightbox.classList.remove('active');
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') lightbox?.classList.remove('active');
+      });
+    </script>
+  </body>
+</html>
