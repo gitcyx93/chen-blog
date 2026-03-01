@@ -133,7 +133,3 @@
   display: block;
 }
 
-/* 防止 ContentPanel 二次渲染产生重复封面 */
-.article-cover-wrapper ~ .article-cover-wrapper {
-  display: none;
-}

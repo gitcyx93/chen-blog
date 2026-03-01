@@ -5,10 +5,14 @@ import keystatic from '@keystatic/astro';
 import cloudflare from '@astrojs/cloudflare';
 import react from '@astrojs/react';
 import { wikiLinksIntegration } from './src/integrations/wiki-links.mjs';
+import { remarkCover } from './src/plugins/remark-cover.mjs';
 
 export default defineConfig({
   site: 'https://personal-blog-cn.pages.dev',
   adapter: cloudflare(),
+  markdown: {
+    remarkPlugins: [remarkCover],  // 封面图：读取 frontmatter cover 字段注入图片
+  },
   integrations: [
     starlight({
       title: '陈的笔记',

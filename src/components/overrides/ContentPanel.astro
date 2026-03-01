@@ -1,23 +1,12 @@
 ---
 /**
  * 覆盖 Starlight 的 ContentPanel 组件
- * - 在正文上方显示封面图（cover frontmatter）
- * - 在正文下方注入 BacklinksPanel（反向链接）
+ * 在正文内容下方注入 BacklinksPanel（反向链接）
+ * 封面图由 remark-cover 插件在 Markdown 编译时注入，无需在此处理
  */
 import Default from '@astrojs/starlight/components/ContentPanel.astro';
 import BacklinksPanel from '../BacklinksPanel.astro';
-import type { Props } from '@astrojs/starlight/props';
-
-// Starlight v0.37+ stores route data in Astro.locals.starlightRoute
-const starlightRoute = (Astro.locals as any).starlightRoute;
-const cover = starlightRoute?.entry?.data?.cover as string | undefined;
 ---
-
-{cover && (
-  <div class="article-cover-wrapper">
-    <img src={cover} alt="" class="article-cover" loading="lazy" />
-  </div>
-)}
 
 <Default {...Astro.props}>
   <slot />
