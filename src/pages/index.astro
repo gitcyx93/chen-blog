@@ -14,6 +14,22 @@ const cards = [
   hasSidebar={false}
   headings={[]}
 >
+  <!-- ── 开场遮罩 ── -->
+  <div id="intro-overlay" aria-hidden="true">
+    <div class="terminal-window">
+      <div class="terminal-titlebar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+      </div>
+      <div class="terminal-body">
+        <span class="prompt">❯&nbsp;</span><span id="typed-text"></span><span class="cursor" id="typed-cursor">█</span>
+      </div>
+    </div>
+    <p class="skip-hint">点击任意处跳过</p>
+  </div>
+
+  <!-- ── 首页内容 ── -->
   <div class="home">
     <div class="hero">
       <h1>你好，人类。<br />欢迎你选择走进来。</h1>
@@ -37,8 +53,146 @@ const cards = [
   </div>
 </StarlightPage>
 
+<script>
+  const overlay  = document.getElementById('intro-overlay');
+  const typedEl  = document.getElementById('typed-text');
+  const cursor   = document.getElementById('typed-cursor');
+  if (!overlay || !typedEl || !cursor) throw new Error('intro elements missing');
+
+  // 分段文字：普通 / 强调 / 普通
+  const segments = [
+    { text: '你好，人类，欢迎你', hl: false },
+    { text: '选择',              hl: true  },
+    { text: '走进来',            hl: false },
+  ];
+
+  let dismissed = false;
+
+  function dismiss() {
+    if (dismissed) return;
+    dismissed = true;
+    overlay.classList.add('outro');
+    setTimeout(() => overlay.remove(), 750);
+  }
+
+  overlay.addEventListener('click', dismiss);
+
+  const sleep = (ms: number) => new Promise<void>(r => setTimeout(r, ms));
+
+  async function run() {
+    await sleep(350);
+
+    for (const seg of segments) {
+      if (dismissed) return;
+
+      // 强调词前加停顿，制造"犹豫感"
+      if (seg.hl) await sleep(420);
+
+      for (const ch of [...seg.text]) {
+        if (dismissed) return;
+        const span = document.createElement('span');
+        if (seg.hl) span.className = 'hl';
+        span.textContent = ch;
+        typedEl.appendChild(span);
+
+        // 强调词打慢一点，普通词随机节奏
+        const delay = seg.hl ? 160 : 65 + Math.random() * 55;
+        await sleep(delay);
+      }
+
+      // 强调词后也停顿，让"选择"两字悬在空中
+      if (seg.hl) await sleep(380);
+    }
+
+    // 打完后光标再闪几次，然后消散
+    await sleep(950);
+    dismiss();
+  }
+
+  run();
+</script>
+
 <style>
-  /* 隐藏 Starlight 自动生成的顶栏、页面标题和 hero 分隔线 */
+  /* ══ 开场遮罩 ══ */
+  #intro-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: #2e3440;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    transition: transform 0.75s cubic-bezier(0.76, 0, 0.24, 1);
+    cursor: pointer;
+  }
+  #intro-overlay.outro {
+    transform: translateY(-100vh);
+  }
+
+  /* 终端窗口 */
+  .terminal-window {
+    width: min(520px, 88vw);
+    background: #3b4252;
+    border-radius: 10px;
+    box-shadow: 0 28px 72px rgba(0, 0, 0, 0.55);
+    overflow: hidden;
+  }
+
+  .terminal-titlebar {
+    background: #434c5e;
+    padding: 10px 14px;
+    display: flex;
+    gap: 7px;
+    align-items: center;
+  }
+  .dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+  }
+  .dot-red    { background: #bf616a; }
+  .dot-yellow { background: #ebcb8b; }
+  .dot-green  { background: #a3be8c; }
+
+  .terminal-body {
+    padding: 20px 24px 26px;
+    font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, 'Courier New', monospace;
+    font-size: clamp(1rem, 2.6vw, 1.2rem);
+    line-height: 1.7;
+    color: #d8dee9;
+    min-height: 3em;
+  }
+
+  .prompt {
+    color: #a3be8c;
+    user-select: none;
+  }
+
+  /* 强调词：琥珀黄 + 加粗（JS 动态创建的元素没有 Astro 作用域属性，需用 :global） */
+  :global(.hl) {
+    color: #ebcb8b;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+
+  /* 光标 */
+  .cursor {
+    color: #88c0d0;
+    animation: blink 0.85s step-end infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* 跳过提示 */
+  .skip-hint {
+    font-size: 0.75rem;
+    color: #4c566a;
+    letter-spacing: 0.06em;
+    user-select: none;
+  }
+
+  /* ══ 隐藏 Starlight 自动元素 ══ */
   :global(header.header) { display: none; }
   :global(.main-frame) { padding-top: 0 !important; }
   :global(#_top) { display: none; }
