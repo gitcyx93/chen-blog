@@ -1,0 +1,109 @@
+---
+/**
+ * 覆盖 Starlight Header：
+ * 行1 — macOS 三点 + 导航链接 + 搜索 + 主题切换
+ * 行2 — 终端路径栏（yuxiang@blog ~/ / category / 文章名）
+ */
+import type { Props } from '@astrojs/starlight/props';
+import Search from '@astrojs/starlight/components/Search.astro';
+import ThemeSelect from '@astrojs/starlight/components/ThemeSelect.astro';
+
+const title: string = Astro.locals.starlightRoute?.entry?.data?.title ?? '';
+const pathname = Astro.url.pathname.replace(/^\/|\/$/g, '');
+const segments = pathname.split('/').filter(Boolean);
+const dirs = segments.slice(0, -1);
+
+const p = Astro.url.pathname;
+const isNotes = !p.startsWith('/blog') && !p.startsWith('/tools') && !p.startsWith('/about') && p !== '/';
+---
+
+<div class="header-wrapper">
+  <!-- 行1：导航 -->
+  <div class="nav-row">
+    <nav class="nav-links">
+      <a href="/blog"                    class={p.startsWith('/blog')    ? 'active' : ''}>文章</a>
+      <a href="/psychology/human-vs-ai/" class={isNotes                  ? 'active' : ''}>笔记</a>
+      <a href="/tools"                   class={p.startsWith('/tools')   ? 'active' : ''}>工具箱</a>
+      <a href="/about"                   class={p.startsWith('/about')   ? 'active' : ''}>关于</a>
+    </nav>
+    <div class="nav-actions">
+      <Search {...Astro.props} />
+      <ThemeSelect {...Astro.props} />
+    </div>
+  </div>
+
+  <!-- 行2：终端路径 -->
+  <div class="path-bar">
+    <span class="tp-user">yuxiang</span><span class="tp-dim">@</span><span class="tp-host">blog</span><span class="tp-dim"> ~/</span>
+    {dirs.map(dir => (
+      <span><span class="tp-sep"> / </span><span class="tp-dir">{dir}</span></span>
+    ))}
+    {title && dirs.length > 0 && (
+      <span><span class="tp-sep"> / </span><span class="tp-title">{title}</span></span>
+    )}
+  </div>
+</div>
+
+<style>
+  /* 撑满 header 元素（可能是 flex 容器） */
+  .header-wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  /* ── 行1：导航栏 ── */
+  .nav-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 3.5rem;
+    padding-left: 72px;   /* 给 macOS 三点留位 */
+    padding-right: 1rem;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 1.75rem;
+    align-items: center;
+  }
+
+  .nav-links a {
+    font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+    font-size: 0.84rem;
+    color: var(--text-body);
+    text-decoration: none;
+    opacity: 0.55;
+    transition: opacity 0.15s, color 0.15s;
+    letter-spacing: 0.02em;
+  }
+
+  .nav-links a:hover   { opacity: 1; }
+  .nav-links a.active  { opacity: 1; color: var(--accent); }
+
+  .nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  /* ── 行2：终端路径 ── */
+  .path-bar {
+    padding: 0.35rem 1rem;
+    font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+    font-size: 0.74rem;
+    border-top: 1px solid var(--border);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.4;
+    background: var(--bg-base);
+  }
+
+  .tp-user  { color: var(--color-green); }
+  .tp-host  { color: var(--color-blue);  }
+  .tp-dim   { color: var(--text-muted);  }
+  .tp-sep   { color: var(--text-muted);  }
+  .tp-dir   { color: var(--color-blue);  }
+  .tp-title { color: var(--text-body);   }
+</style>

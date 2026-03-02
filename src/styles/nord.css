@@ -139,40 +139,41 @@ time,
 }
 
 /* ===================================================
-   顶栏：macOS 风格标题栏
+   顶栏：macOS 风格双行标题栏
+   行1 = 3.5rem 导航链接；行2 = ~1.75rem 终端路径
    =================================================== */
 header.header {
   background: var(--bg-elevated) !important;
   border-bottom: 1px solid var(--border) !important;
   position: relative;
-  padding-left: 72px !important;
+  height: auto !important;   /* 由两行内容自然撑开 */
+  padding: 0 !important;     /* Header 组件内部控制 padding */
 }
 
-/* macOS 三点装饰 */
+/* Starlight 可能给内层 div 设宽度，确保填满 */
+header.header > * {
+  width: 100%;
+}
+
+/* --sl-nav-height 供 sidebar sticky-top / scroll-margin 使用 */
+:root,
+:root[data-theme='dark'] {
+  --sl-nav-height: 5.25rem; /* 3.5rem nav + ~1.75rem path bar */
+}
+
+/* macOS 三点：垂直居中于第一行（3.5rem 高） */
 header.header::before {
   content: '';
   position: absolute;
   left: 16px;
-  top: 50%;
+  top: 1.75rem;              /* 3.5rem ÷ 2 */
   transform: translateY(-50%);
   width: 12px;
   height: 12px;
   border-radius: 50%;
   background: #ff5f57;
   box-shadow: 20px 0 0 #febc2e, 40px 0 0 #28c840;
-  flex-shrink: 0;
-}
-
-.site-title {
-  font-size: 0.85rem !important;
-  letter-spacing: 0.02em;
-}
-
-/* ❯ 前缀：终端入口感 */
-.site-title::before {
-  content: '❯ ';
-  color: var(--color-green);
-  font-weight: 700;
+  z-index: 1;
 }
 
 /* ===================================================

@@ -35,9 +35,11 @@ export default defineConfig({
       lastUpdated: true,
       social: [],
       components: {
+        // 自定义顶栏：导航链接 + 终端路径栏
+        Header: './src/components/overrides/Header.astro',
         // 在正文下方注入「反向链接」面板
         ContentPanel: './src/components/overrides/ContentPanel.astro',
-        // 终端风格路径面包屑（PageTitle 上方注入）
+        // 只保留 H1（路径已移至 Header）
         PageTitle: './src/components/overrides/PageTitle.astro',
       },
     }),
