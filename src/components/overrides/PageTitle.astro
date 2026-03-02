@@ -1,0 +1,58 @@
+---
+/**
+ * 覆盖 Starlight 的 PageTitle 组件
+ * 在 H1 标题上方注入终端风格路径行：
+ * yuxiang@blog ~/ / psychology / 文章标题
+ */
+const PAGE_TITLE_ID = '_top';
+
+const { entry } = Astro.locals.starlightRoute;
+const title: string = entry.data.title ?? '';
+
+// 从 URL 提取目录层级（去掉首尾斜杠，取最后一段之前的部分）
+const pathname = Astro.url.pathname.replace(/^\/|\/$/g, '');
+const segments = pathname.split('/').filter(Boolean);
+const dirs = segments.slice(0, -1); // 去掉最后一段（文章 slug），只保留目录
+---
+
+<div class="terminal-path">
+  <span class="tp-user">yuxiang</span><span class="tp-dim">@</span><span class="tp-host">blog</span><span class="tp-dim"> ~/</span>
+  {dirs.map(dir => (
+    <span><span class="tp-sep"> / </span><span class="tp-dir">{dir}</span></span>
+  ))}
+  {title && (
+    <span><span class="tp-sep"> / </span><span class="tp-title">{title}</span></span>
+  )}
+</div>
+
+<h1 id={PAGE_TITLE_ID}>{title}</h1>
+
+<style>
+  .terminal-path {
+    font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+    font-size: 0.76rem;
+    color: var(--text-muted);
+    padding: 0.5rem 0;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.4;
+  }
+
+  .tp-user  { color: var(--color-green); }
+  .tp-host  { color: var(--color-blue);  }
+  .tp-dim   { color: var(--text-muted);  }
+  .tp-sep   { color: var(--text-muted);  }
+  .tp-dir   { color: var(--color-blue);  }
+  .tp-title { color: var(--text-body);   }
+
+  h1 {
+    margin-top: 1rem;
+    font-size: var(--sl-text-h1);
+    line-height: var(--sl-line-height-headings);
+    font-weight: 600;
+    color: var(--sl-color-white);
+  }
+</style>

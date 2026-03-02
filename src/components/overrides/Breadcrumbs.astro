@@ -1,0 +1,50 @@
+---
+/**
+ * 覆盖 Starlight 的 Breadcrumbs 组件
+ * 在面包屑上方注入终端风格路径行：
+ * yuxiang@blog ~/ / psychology / 文章标题
+ */
+import type { Props } from '@astrojs/starlight/props';
+import Default from '@astrojs/starlight/components/Breadcrumbs.astro';
+
+const { entry } = Astro.props;
+
+// 从 slug 提取目录层级（去掉最后一段，最后一段用文章标题代替）
+const slug: string = (entry as any)?.slug ?? '';
+const dirs = slug.split('/').filter(Boolean).slice(0, -1);
+const title: string = entry?.data?.title ?? '';
+---
+
+<div class="terminal-path">
+  <span class="tp-user">yuxiang</span><span class="tp-dim">@</span><span class="tp-host">blog</span><span class="tp-dim"> ~/</span>
+  {dirs.map(dir => (
+    <span><span class="tp-sep"> / </span><span class="tp-dir">{dir}</span></span>
+  ))}
+  {title && (
+    <span><span class="tp-sep"> / </span><span class="tp-title">{title}</span></span>
+  )}
+</div>
+
+<Default {...Astro.props} />
+
+<style>
+  .terminal-path {
+    font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+    font-size: 0.76rem;
+    color: var(--text-muted);
+    padding: 0.45rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    background: color-mix(in srgb, var(--bg-elevated) 55%, transparent);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.4;
+  }
+
+  .tp-user  { color: var(--color-green); }
+  .tp-host  { color: var(--color-blue);  }
+  .tp-dim   { color: var(--text-muted);  }
+  .tp-sep   { color: var(--text-muted); margin: 0 0.1em; }
+  .tp-dir   { color: var(--color-blue);  }
+  .tp-title { color: var(--text-body);   }
+</style>

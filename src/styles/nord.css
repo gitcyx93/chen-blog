@@ -119,13 +119,14 @@ time,
 }
 
 /* ===================================================
-   引用块 / Callout：细边线面板风，不用大色块
+   引用块 / Callout：深色圆角面板
    =================================================== */
 .sl-markdown-content blockquote {
-  border-inline-start: 2px solid var(--accent-dim);
-  background: color-mix(in srgb, var(--bg-elevated) 50%, transparent);
-  border-radius: 0 var(--radius) var(--radius) 0;
-  padding: 0.75em 1.25em;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-left: 2px solid var(--accent-dim);
+  border-radius: var(--radius);
+  padding: 0.9em 1.25em;
   margin-inline: 0;
   color: var(--text-body);
 }
@@ -138,11 +139,28 @@ time,
 }
 
 /* ===================================================
-   顶栏：状态栏/路径栏风格，轻薄克制
+   顶栏：macOS 风格标题栏
    =================================================== */
 header.header {
   background: var(--bg-elevated) !important;
   border-bottom: 1px solid var(--border) !important;
+  position: relative;
+  padding-left: 72px !important;
+}
+
+/* macOS 三点装饰 */
+header.header::before {
+  content: '';
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #ff5f57;
+  box-shadow: 20px 0 0 #febc2e, 40px 0 0 #28c840;
+  flex-shrink: 0;
 }
 
 .site-title {

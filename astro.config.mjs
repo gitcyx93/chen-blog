@@ -37,6 +37,8 @@ export default defineConfig({
       components: {
         // 在正文下方注入「反向链接」面板
         ContentPanel: './src/components/overrides/ContentPanel.astro',
+        // 终端风格路径面包屑（PageTitle 上方注入）
+        PageTitle: './src/components/overrides/PageTitle.astro',
       },
     }),
     wikiLinksIntegration(),   // Obsidian [[双链]] + 反向链接索引
