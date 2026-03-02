@@ -179,13 +179,26 @@ header.header::before {
 }
 
 /* ===================================================
+   滚动条：全局隐藏原生滚动条，用极细自定义条替代
+   =================================================== */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+*::-webkit-scrollbar       { width: 3px; height: 3px; }
+*::-webkit-scrollbar-track { background: transparent; }
+*::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+/* ===================================================
    侧栏：索引区，退后让正文当舞台
    =================================================== */
 [class*="sidebar"] {
   background: color-mix(in srgb, var(--bg-base) 97%, transparent) !important;
   border-inline-end: 1px solid var(--border) !important;
   font-size: 0.82rem;
+  scrollbar-width: none;   /* 侧栏滚动条完全隐藏 */
 }
+[class*="sidebar"]::-webkit-scrollbar { display: none; }
 
 /* 非激活侧栏项：更淡，减少压迫感 */
 [class*="sidebar"] a:not([aria-current='page']) {
@@ -196,11 +209,39 @@ header.header::before {
   opacity: 1;
 }
 
-/* 激活项 */
+/* 激活项：去掉左边框，改用 ❯ 前缀 */
 [aria-current='page'] {
-  background-color: color-mix(in srgb, var(--accent-dim) 20%, transparent) !important;
+  background-color: transparent !important;
   color: var(--accent) !important;
-  border-inline-start-color: var(--accent) !important;
+  border-inline-start-color: transparent !important;
+  opacity: 1 !important;
+}
+[aria-current='page']::before {
+  content: '❯ ';
+  color: var(--color-green);
+  font-weight: 700;
+}
+
+/* 侧栏折叠箭头：隐藏 SVG caret，改用终端风格 [+]/[-] */
+[class*="sidebar"] .caret {
+  display: none;
+}
+
+/* 分组 summary 行：[+]/[-] 前缀，修正 flex 布局防止撑开 */
+[class*="sidebar"] details > summary {
+  justify-content: flex-start !important;
+  gap: 0.4em;
+}
+[class*="sidebar"] details > summary::before {
+  content: '[+]';
+  color: var(--text-muted);
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 0.78rem;
+  flex-shrink: 0;
+}
+[class*="sidebar"] details[open] > summary::before {
+  content: '[-]';
+  color: var(--color-green);
 }
 
 /* ===================================================
