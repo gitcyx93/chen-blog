@@ -4,7 +4,7 @@ import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
 
 const dirs = [
   { name: '文章/',   desc: '长文，值得反复阅读',   meta: '12 篇', href: '/blog' },
-  { name: '笔记/',   desc: '日常碎片与即时观察',   meta: '──',    href: '/psychology/human-vs-ai/' },
+  { name: '笔记/',   desc: '日常碎片与即时观察',   meta: '',      href: '/psychology/human-vs-ai/' },
   { name: '工具箱/', desc: '正在用的工具推荐',     meta: ' 9 项', href: '/tools' },
 ];
 ---
@@ -34,15 +34,12 @@ const dirs = [
         </div>
 
         <div class="line output-block" id="output-sub">
-          <span class="dim">#</span> 这里不用登录，没有广告，没有算法，没有审查。<br/>
-          <span class="dim">#</span> 你不是产品。&nbsp;<a href="/about" class="link">了解这个站点 →</a>
+          <span class="dim"># 这里不用登录，没有广告，没有算法，没有审查。</span><br/>
+          <span class="manifesto">你不是产品。</span>&nbsp;<a href="/about" class="link">了解这个站点 →</a>
         </div>
 
         <div class="line spacer" id="spacer-ls"></div>
 
-        <div class="line cmd-line" id="ls-cmd">
-          <span class="path-user">yuxiang</span><span class="dim">@</span><span class="path-host">blog</span><span class="dim"> ~/</span>
-        </div>
         <div class="line cmd-line" id="ls-prompt">
           <span class="prompt">❯&nbsp;</span><span class="typed-ls"></span><span class="cursor" id="cursor-ls">█</span>
         </div>
@@ -58,9 +55,6 @@ const dirs = [
         </div>
 
         <div class="line spacer" id="spacer-end"></div>
-        <div class="line cmd-line" id="final-prompt">
-          <span class="path-user">yuxiang</span><span class="dim">@</span><span class="path-host">blog</span><span class="dim"> ~/</span>
-        </div>
         <div class="line cmd-line" id="final-cursor-line">
           <span class="prompt">❯&nbsp;</span><span class="cursor">█</span>
         </div>
@@ -81,7 +75,6 @@ const dirs = [
   const cursorLs  = document.getElementById('cursor-ls') as HTMLElement;
   const lsOutput  = document.getElementById('ls-output') as HTMLElement;
   const spacerEnd = document.getElementById('spacer-end') as HTMLElement;
-  const finalPrompt     = document.getElementById('final-prompt') as HTMLElement;
   const finalCursorLine = document.getElementById('final-cursor-line') as HTMLElement;
 
   const sleep = (ms: number) => new Promise<void>(r => setTimeout(r, ms));
@@ -122,9 +115,7 @@ const dirs = [
 
     await sleep(600);
     spacerLs.classList.add('show');
-    await sleep(120);
-    lsCmd.classList.add('show');
-    await sleep(120);
+    await sleep(200);
     lsPrompt.classList.add('show');
 
     await sleep(300);
@@ -140,9 +131,7 @@ const dirs = [
 
     await sleep(entries.length * 100 + 200);
     spacerEnd.classList.add('show');
-    await sleep(120);
-    finalPrompt.classList.add('show');
-    await sleep(120);
+    await sleep(200);
     finalCursorLine.classList.add('show');
   }
 
@@ -228,6 +217,11 @@ const dirs = [
     transition: opacity 0.7s ease-out;
   }
   .output-block.show { opacity: 1; }
+
+  .manifesto {
+    color: #eceff4;
+    font-weight: 600;
+  }
 
   .link {
     color: #88c0d0;
