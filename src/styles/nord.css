@@ -1,62 +1,62 @@
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap');
 
 /* ===================================================
-   Tokyo Night 配色 — Starlight CSS 变量覆盖
-   与首页终端风格保持统一
+   Obsidian Nord 配色 — Starlight CSS 变量覆盖
+   完全沿用用户 Obsidian Nord 主题的原始颜色值
    =================================================== */
 
-/* Tokyo Night 色板（映射到原 Nord 变量名以保持兼容） */
+/* Nord 色板 */
 :root {
-  /* 背景层 */
-  --nord0: #1a1b26;  /* 主背景 */
-  --nord1: #24253a;  /* 次级背景（标题栏、卡片） */
-  --nord2: #2a2b3d;  /* 边框 */
-  --nord3: #565f89;  /* 暗淡文字 */
-  /* 文字层 */
-  --nord4: #c0caf5;  /* 正文文字 */
-  --nord5: #cdd6f4;  /* 亮正文 */
-  --nord6: #ffffff;  /* 纯白 */
-  /* 强调色（Frost → Blue/Teal） */
-  --nord7: #73daca;  /* teal */
-  --nord8: #7aa2f7;  /* blue（主强调） */
-  --nord9: #bb9af7;  /* purple */
-  --nord10: #3d59a1; /* dark blue */
-  /* 彩虹色（Aurora → Tokyo Night Aurora） */
-  --nord11: #f7768e; /* red    — H1 */
-  --nord12: #ff9e64; /* orange */
-  --nord13: #e0af68; /* yellow — H2 */
-  --nord14: #9ece6a; /* green  — H3 */
-  --nord15: #9d7cd8; /* purple — links */
+  /* Polar Night */
+  --nord0: #2e3440;
+  --nord1: #3b4252;
+  --nord2: #434c5e;
+  --nord3: #4c566a;
+  /* Snow Storm */
+  --nord4: #d8dee9;
+  --nord5: #e5e9f0;
+  --nord6: #eceff4;
+  /* Frost */
+  --nord7: #8fbcbb;
+  --nord8: #88c0d0;
+  --nord9: #81a1c1;
+  --nord10: #5e81ac;
+  /* Aurora */
+  --nord11: #bf616a; /* red    — H1 */
+  --nord12: #d08770; /* orange */
+  --nord13: #ebcb8b; /* yellow — H2 */
+  --nord14: #a3be8c; /* green  — H3 */
+  --nord15: #b48ead; /* purple — links */
 }
 
-/* Starlight 暗色主题覆盖 */
+/* Starlight 暗色主题覆盖（用户默认暗色） */
 :root[data-theme='dark'],
 :root {
-  --sl-color-accent-low:  var(--nord10); /* #3d59a1 深蓝 */
-  --sl-color-accent:      var(--nord8);  /* #7aa2f7 蓝 主色 */
-  --sl-color-accent-high: var(--nord7);  /* #73daca 青色 */
+  --sl-color-accent-low:  var(--nord10); /* #5e81ac 深蓝 */
+  --sl-color-accent:      var(--nord8);  /* #88c0d0 冰蓝 主色 */
+  --sl-color-accent-high: var(--nord7);  /* #8fbcbb 青色 */
 
-  --sl-color-white:  var(--nord6);  /* #ffffff */
-  --sl-color-gray-1: var(--nord5);  /* #cdd6f4 */
-  --sl-color-gray-2: var(--nord4);  /* #c0caf5 */
-  --sl-color-gray-3: var(--nord3);  /* #565f89 */
-  --sl-color-gray-4: var(--nord2);  /* #2a2b3d */
-  --sl-color-gray-5: var(--nord1);  /* #24253a */
-  --sl-color-gray-6: var(--nord0);  /* #1a1b26 */
-  --sl-color-black:  #13141f;
+  --sl-color-white:  var(--nord6);  /* #eceff4 */
+  --sl-color-gray-1: var(--nord5);  /* #e5e9f0 */
+  --sl-color-gray-2: var(--nord4);  /* #d8dee9 */
+  --sl-color-gray-3: var(--nord3);  /* #4c566a */
+  --sl-color-gray-4: var(--nord2);  /* #434c5e */
+  --sl-color-gray-5: var(--nord1);  /* #3b4252 */
+  --sl-color-gray-6: var(--nord0);  /* #2e3440 */
+  --sl-color-black:  #242831;
 }
 
-/* ── 正文标题颜色（Tokyo Night Aurora）── */
+/* ── 正文标题颜色（复刻 Obsidian Nord）── */
 .sl-markdown-content h1 { color: var(--nord11); } /* red    */
 .sl-markdown-content h2 { color: var(--nord13); } /* yellow */
 .sl-markdown-content h3 { color: var(--nord14); } /* green  */
 .sl-markdown-content h4 { color: var(--nord15); } /* purple */
 .sl-markdown-content h5 { color: var(--nord7);  } /* teal   */
-.sl-markdown-content h6 { color: var(--nord8);  } /* blue   */
+.sl-markdown-content h6 { color: var(--nord9);  } /* blue   */
 
 /* ── 链接 ── */
 .sl-markdown-content a {
-  color: var(--nord15);
+  color: var(--nord15);           /* purple，与 Obsidian Nord 一致 */
   text-decoration-color: transparent;
   transition: color 0.15s, text-decoration-color 0.15s;
 }
@@ -82,7 +82,7 @@
   color: var(--nord6);
 }
 
-/* ── 字体：等宽字体 sidebar + UI 元素 ── */
+/* ── 字体：正文用衬线，提升阅读舒适度 ── */
 .sl-markdown-content {
   font-size: 1rem;
   line-height: 1.85;
@@ -93,10 +93,6 @@
   --sl-font: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
 }
 
-nav, .sidebar, .site-title, header.header {
-  font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
-}
-
 /* ── 顶栏终端化 ── */
 header.header {
   background: var(--nord1) !important;
@@ -104,42 +100,35 @@ header.header {
 }
 
 .site-title {
-  color: var(--nord4) !important;
   font-size: 0.85rem !important;
   letter-spacing: 0.02em;
 }
 
-/* site title 前加 ~/ 前缀感觉 */
 .site-title::before {
   content: '❯ ';
-  color: var(--nord14); /* green */
+  color: var(--nord14); /* Nord green */
   font-weight: 700;
 }
 
-/* ── 侧边栏 ── */
-.sidebar {
-  background: color-mix(in srgb, var(--nord0) 95%, var(--nord1)) !important;
-  border-inline-end-color: var(--nord2) !important;
-  font-size: 0.82rem;
-}
-
 /* ── Obsidian [[双链]] 样式 ── */
+
+/* 已解析的内部链接 */
 .sl-markdown-content .internal-link {
-  color: var(--nord8);
-  background: color-mix(in srgb, var(--nord8) 10%, transparent);
+  color: var(--nord9);                       /* frost 蓝 */
+  background: color-mix(in srgb, var(--nord9) 10%, transparent);
   border-radius: 3px;
   padding: 0 0.2em;
   text-decoration: none;
   transition: background 0.15s, color 0.15s;
 }
 .sl-markdown-content .internal-link:hover {
-  background: color-mix(in srgb, var(--nord8) 20%, transparent);
-  color: var(--nord7);
+  background: color-mix(in srgb, var(--nord9) 20%, transparent);
+  color: var(--nord8);
 }
 
-/* 断链 */
+/* 断链（目标页面不存在） */
 .sl-markdown-content .internal-link.broken {
-  color: var(--nord11);
+  color: var(--nord11);                      /* aurora 红 */
   background: color-mix(in srgb, var(--nord11) 10%, transparent);
   text-decoration: line-through;
   cursor: not-allowed;

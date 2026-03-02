@@ -162,14 +162,14 @@ const dirs = [
 
   .terminal-window {
     width: min(780px, 100%);
-    background: #1a1b26;
+    background: #2e3440;
     border-radius: 10px;
-    box-shadow: 0 0 0 1px rgba(255,255,255,0.07), 0 20px 60px rgba(0,0,0,0.6);
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.07), 0 20px 60px rgba(0,0,0,0.5);
     overflow: hidden;
   }
 
   .terminal-titlebar {
-    background: #24253a;
+    background: #3b4252;
     padding: 11px 16px;
     display: flex;
     gap: 7px;
@@ -184,7 +184,7 @@ const dirs = [
     flex: 1;
     text-align: center;
     font-size: 0.73rem;
-    color: #565f89;
+    color: #4c566a;
     user-select: none;
   }
 
@@ -192,7 +192,7 @@ const dirs = [
     padding: 18px 24px 28px;
     font-size: clamp(0.875rem, 2.2vw, 1rem);
     line-height: 1.75;
-    color: #c0caf5;
+    color: #d8dee9;
   }
 
   .line {
@@ -203,19 +203,19 @@ const dirs = [
   .line:nth-child(2) { display: block; }
   .line.show { display: block; }
 
-  .path-user  { color: #9ece6a; }
-  .path-host  { color: #7aa2f7; }
-  .dim        { color: #565f89; }
-  .prompt     { color: #9ece6a; user-select: none; }
+  .path-user  { color: #a3be8c; }
+  .path-host  { color: #81a1c1; }
+  .dim        { color: #4c566a; }
+  .prompt     { color: #a3be8c; user-select: none; }
 
   :global(.hl) {
-    color: #e0af68;
+    color: #ebcb8b;
     font-weight: 700;
     letter-spacing: 0.04em;
   }
 
   .cursor {
-    color: #bb9af7;
+    color: #b48ead;
     animation: blink 0.85s step-end infinite;
   }
   @keyframes blink { 50% { opacity: 0; } }
@@ -223,19 +223,19 @@ const dirs = [
   .output-block {
     margin-top: 6px;
     margin-bottom: 4px;
-    color: #565f89;
+    color: #4c566a;
     opacity: 0;
     transition: opacity 0.7s ease-out;
   }
   .output-block.show { opacity: 1; }
 
   .link {
-    color: #7dcfff;
+    color: #88c0d0;
     text-decoration: none;
-    border-bottom: 1px solid rgba(125,207,255,0.3);
+    border-bottom: 1px solid rgba(136,192,208,0.3);
     transition: border-color 0.15s;
   }
-  .link:hover { border-color: #7dcfff; }
+  .link:hover { border-color: #88c0d0; }
 
   .spacer { margin-top: 8px; }
 
@@ -261,9 +261,9 @@ const dirs = [
   .ls-entry.show { opacity: 1; transform: translateX(0); }
   .ls-entry:hover { background: rgba(255,255,255,0.04); }
 
-  .ls-name { color: #7aa2f7; font-weight: 600; }
-  .ls-desc { color: #565f89; }
-  .ls-meta { color: #414868; text-align: right; }
+  .ls-name { color: #81a1c1; font-weight: 600; }
+  .ls-desc { color: #4c566a; }
+  .ls-meta { color: #434c5e; text-align: right; }
 
   @media (max-width: 480px) {
     .ls-entry { grid-template-columns: 9ch 1fr; }
