@@ -209,11 +209,39 @@ header.header::before {
   opacity: 1;
 }
 
-/* 激活项 */
-[aria-current='page'] {
+/* 激活项（仅侧栏） */
+[class*="sidebar"] [aria-current='page'] {
   background-color: color-mix(in srgb, var(--accent-dim) 20%, transparent) !important;
   color: var(--accent) !important;
-  border-inline-start-color: var(--accent) !important;
+  border-inline-start-color: transparent !important;
+  opacity: 1 !important;
+}
+
+/* ❯ 前缀：标记当前页 */
+[class*="sidebar"] [aria-current='page']::before {
+  content: '❯ ';
+  color: var(--color-green);
+  font-weight: 700;
+}
+
+/* 折叠箭头：隐藏默认 SVG caret，改用 [+]/[-] */
+[class*="sidebar"] .caret {
+  display: none;
+}
+[class*="sidebar"] details > summary {
+  justify-content: flex-start !important;
+  gap: 0.4em;
+}
+[class*="sidebar"] details > summary::before {
+  content: '[+]';
+  color: var(--text-muted);
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 0.78rem;
+  flex-shrink: 0;
+}
+[class*="sidebar"] details[open] > summary::before {
+  content: '[-]';
+  color: var(--color-green);
 }
 
 /* ===================================================
