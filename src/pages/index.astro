@@ -1,12 +1,6 @@
 ---
 export const prerender = true;
 import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
-
-const cards = [
-  { title: '文章',   desc: '长文，值得反复阅读。',   href: '/blog' },
-  { title: '笔记',   desc: '日常碎片与即时观察。',   href: '/psychology/human-vs-ai/' },
-  { title: '工具箱', desc: '正在用的工具推荐。',    href: '/tools' },
-];
 ---
 
 <StarlightPage
@@ -15,94 +9,145 @@ const cards = [
   headings={[]}
 >
   <div class="home">
-    <div class="hero">
+    <div class="ide-window">
 
-      <!-- ── 终端打字机 ── -->
-      <div class="terminal-window">
-        <div class="terminal-titlebar">
+      <!-- ── 标题栏 ── -->
+      <div class="ide-titlebar">
+        <div class="ide-dots">
           <span class="dot dot-red"></span>
           <span class="dot dot-yellow"></span>
           <span class="dot dot-green"></span>
-          <span class="terminal-title">~/ 陈的笔记</span>
         </div>
-        <div class="terminal-body">
-          <div class="terminal-line path-line">
-            <span class="path-user">yuxiang</span><span class="path-at">@</span><span class="path-host">blog</span><span class="path-sep"> </span><span class="path-dir">~/陈的笔记</span>
+        <span class="ide-title">陈的笔记 — README.md</span>
+        <div class="ide-dots-placeholder"></div>
+      </div>
+
+      <!-- ── 主体：活动栏 + 侧边栏 + 编辑器 ── -->
+      <div class="ide-layout">
+
+        <!-- 活动栏（最左侧图标列） -->
+        <div class="ide-activity-bar">
+          <button class="activity-btn active" title="文件管理器">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+              <path d="M3 6h18M3 12h18M3 18h18"/>
+            </svg>
+          </button>
+          <button class="activity-btn" title="搜索">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+              <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- 文件树侧边栏 -->
+        <div class="ide-sidebar">
+          <div class="sidebar-header">EXPLORER</div>
+          <div class="sidebar-tree">
+            <div class="tree-root">
+              <span class="tree-arrow open">▾</span>
+              <span class="tree-folder-name">陈的笔记</span>
+            </div>
+            <div class="tree-item file active">
+              <span class="tree-indent"></span>
+              <span class="tree-file-icon">≡</span>
+              <span>README.md</span>
+            </div>
+            <div class="tree-item folder">
+              <span class="tree-indent"></span>
+              <span class="tree-arrow">›</span>
+              <span class="tree-folder-icon">▸</span>
+              <a href="/blog">文章</a>
+            </div>
+            <div class="tree-item folder">
+              <span class="tree-indent"></span>
+              <span class="tree-folder-icon">▸</span>
+              <a href="/psychology/human-vs-ai/">笔记</a>
+            </div>
+            <div class="tree-item folder">
+              <span class="tree-indent"></span>
+              <span class="tree-folder-icon">▸</span>
+              <a href="/tools">工具箱</a>
+            </div>
           </div>
-          <div class="terminal-line">
-            <span class="prompt">❯&nbsp;</span><span id="typed-text"></span><span class="cursor" id="typed-cursor">█</span>
+        </div>
+
+        <!-- 编辑器区域 -->
+        <div class="ide-editor">
+
+          <!-- 标签栏 -->
+          <div class="ide-tabs">
+            <div class="tab active">
+              <span class="tab-dot"></span>
+              <span class="tab-name">README.md</span>
+            </div>
           </div>
+
+          <!-- 面包屑 -->
+          <div class="ide-breadcrumb">
+            <span class="bc-dim">陈的笔记</span>
+            <span class="bc-sep"> › </span>
+            <span class="bc-current">README.md</span>
+          </div>
+
+          <!-- 正文（带行号） -->
+          <div class="ide-content">
+            <div class="line-numbers" aria-hidden="true">
+              {Array.from({length: 20}, (_, i) => <span>{i + 1}</span>)}
+            </div>
+            <div class="editor-body">
+              <p class="md-h1"><span class="md-marker"># </span>你好，人类</p>
+              <p class="md-h2"><span class="md-marker">## </span>欢迎你<span class="hl">选择</span>走进来</p>
+              <p class="md-blank"></p>
+              <p class="md-blockquote">
+                <span class="md-marker">&gt; </span>这里不用登录，没有广告，没有算法，没有审查。<br/>
+                <span class="md-marker">&gt; </span>你不是产品。<a href="/about" class="md-link">[了解这个站点](/about)</a>
+              </p>
+              <p class="md-blank"></p>
+              <p class="md-hr"><span class="md-marker">---</span></p>
+              <p class="md-blank"></p>
+              <p class="md-h2"><span class="md-marker">## </span>目录</p>
+              <p class="md-blank"></p>
+              <p class="md-li">
+                <span class="md-marker">- </span>
+                <a href="/blog" class="md-link-inline">[文章]</a>
+                <span class="md-link-url">(/blog)</span>
+                <span class="md-comment"> — 长文，值得反复阅读</span>
+              </p>
+              <p class="md-li">
+                <span class="md-marker">- </span>
+                <a href="/psychology/human-vs-ai/" class="md-link-inline">[笔记]</a>
+                <span class="md-link-url">(/notes)</span>
+                <span class="md-comment"> — 日常碎片与即时观察</span>
+              </p>
+              <p class="md-li">
+                <span class="md-marker">- </span>
+                <a href="/tools" class="md-link-inline">[工具箱]</a>
+                <span class="md-link-url">(/tools)</span>
+                <span class="md-comment"> — 正在用的工具推荐</span>
+              </p>
+              <p class="md-blank"></p>
+            </div>
+          </div>
+
         </div>
       </div>
 
-      <!-- 遮罩消散 -->
-      <p class="sub" id="sub-text">
-        这里不用登录，没有广告，没有算法，没有审查。你不是产品。
-        <a href="/about">了解这个站点 →</a>
-      </p>
+      <!-- ── 状态栏 ── -->
+      <div class="ide-statusbar">
+        <div class="status-left">
+          <span class="status-branch">⎇&nbsp;main</span>
+          <span class="status-sep"></span>
+        </div>
+        <div class="status-right">
+          <span>UTF-8</span>
+          <span>Markdown</span>
+          <span>Ln 1, Col 1</span>
+        </div>
+      </div>
 
-      <!-- 向上滑入 -->
-      <p class="intro" id="intro-text">逛逛看。</p>
-    </div>
-
-    <div class="cards">
-      {cards.map(card => (
-        <a href={card.href} class="card">
-          <span class="card-title">{card.title}</span>
-          <span class="card-desc">{card.desc}</span>
-        </a>
-      ))}
     </div>
   </div>
 </StarlightPage>
-
-<script>
-  const typedEl = document.getElementById('typed-text');
-  const cursor  = document.getElementById('typed-cursor');
-  const subEl   = document.getElementById('sub-text');
-  const introEl = document.getElementById('intro-text');
-  if (!typedEl || !cursor || !subEl || !introEl) throw new Error('elements missing');
-
-  const segments = [
-    { text: '你好，人类，欢迎你', hl: false },
-    { text: '选择',              hl: true  },
-    { text: '走进来',            hl: false },
-  ];
-
-  const sleep = (ms: number) => new Promise<void>(r => setTimeout(r, ms));
-
-  async function run() {
-    await sleep(300);
-
-    for (const seg of segments) {
-      if (seg.hl) await sleep(420);
-      for (const ch of [...seg.text]) {
-        const span = document.createElement('span');
-        if (seg.hl) span.className = 'hl';
-        span.textContent = ch;
-        typedEl.appendChild(span);
-        await sleep(seg.hl ? 160 : 65 + Math.random() * 55);
-      }
-      if (seg.hl) await sleep(380);
-    }
-
-    // 打完 → 遮罩消散
-    await sleep(350);
-    subEl.classList.add('reveal');
-
-    // 再停顿 → 向上滑入 (intro)
-    await sleep(500);
-    introEl.classList.add('slide-up');
-
-    // 卡片依次滑入
-    await sleep(300);
-    document.querySelectorAll<HTMLElement>('.card').forEach((card, i) => {
-      setTimeout(() => card.classList.add('slide-up'), i * 120);
-    });
-  }
-
-  run();
-</script>
 
 <style>
   /* ══ 隐藏 Starlight 自动元素 ══ */
@@ -110,175 +155,249 @@ const cards = [
   :global(.main-frame) { padding-top: 0 !important; }
   :global(#_top) { display: none; }
   :global(.sl-markdown-content > hr:first-of-type) { display: none; }
+  :global(.sl-markdown-content p) { margin: 0 !important; }
 
-  .home { margin-top: -1rem; }
-
-  /* ── Hero ── */
-  .hero {
-    padding: 4rem 0 3rem;
+  .home {
+    padding: 3rem 0 4rem;
+    font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
   }
 
-  /* ══ 终端窗口 ══ */
-  .terminal-window {
-    width: min(680px, 100%);
-    background: #1e2029;
+  /* ══ IDE 外框 ══ */
+  .ide-window {
+    width: min(920px, 100%);
+    background: #1a1b26;
     border-radius: 10px;
-    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255,255,255,0.06);
     overflow: hidden;
-    margin-bottom: 2.5rem;
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,0.07),
+      0 24px 64px rgba(0,0,0,0.6);
+    display: flex;
+    flex-direction: column;
   }
 
-  .terminal-titlebar {
-    background: #2d303e;
+  /* 标题栏 */
+  .ide-titlebar {
+    background: #16161e;
     padding: 10px 16px;
     display: flex;
-    gap: 7px;
     align-items: center;
+    justify-content: space-between;
     border-bottom: 1px solid rgba(255,255,255,0.06);
-  }
-
-  .dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
     flex-shrink: 0;
   }
+  .ide-dots, .ide-dots-placeholder {
+    display: flex;
+    gap: 7px;
+    width: 60px;
+  }
+  .dot { width: 12px; height: 12px; border-radius: 50%; }
   .dot-red    { background: #ff5f57; }
   .dot-yellow { background: #febc2e; }
   .dot-green  { background: #28c840; }
-
-  .terminal-title {
-    flex: 1;
-    text-align: center;
-    font-family: ui-monospace, monospace;
-    font-size: 0.75rem;
-    color: #6b7280;
+  .ide-title {
+    font-size: 0.73rem;
+    color: #565f89;
     user-select: none;
   }
 
-  .terminal-body {
-    padding: 18px 22px 24px;
-    font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, 'Courier New', monospace;
-    font-size: clamp(0.95rem, 2.4vw, 1.1rem);
-    line-height: 1.8;
-    color: #cdd6f4;
-  }
-
-  .terminal-line {
-    display: block;
-  }
-
-  /* 路径行 */
-  .path-line {
-    margin-bottom: 2px;
-  }
-  .path-user  { color: #a6e3a1; }
-  .path-at    { color: #6b7280; }
-  .path-host  { color: #89b4fa; }
-  .path-sep   { color: #6b7280; }
-  .path-dir   { color: #89dceb; }
-
-  .prompt {
-    color: #a6e3a1;
-    user-select: none;
-  }
-
-  /* 强调词（:global 因 JS 动态创建无 Astro 作用域属性） */
-  :global(.hl) {
-    color: #f9e2af;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-  }
-
-  .cursor {
-    color: #cba6f7;
-    animation: blink 0.85s step-end infinite;
-  }
-  @keyframes blink { 50% { opacity: 0; } }
-
-  /* ══ 遮罩消散 (.sub) ══ */
-  .sub {
-    font-size: 1rem;
-    color: var(--sl-color-gray-2);
-    line-height: 1.75;
-    max-width: 520px;
-    opacity: 0;
-    filter: blur(6px);
-    transition: opacity 0.9s ease-out, filter 0.9s ease-out;
-  }
-  .sub.reveal {
-    opacity: 1;
-    filter: blur(0);
-  }
-
-  .sub a {
-    color: var(--sl-color-accent);
-    text-decoration: none;
-    margin-left: 0.4em;
-    transition: opacity 0.15s;
-  }
-  .sub a:hover { opacity: 0.8; }
-
-  /* ══ 向上滑入 (.intro) ══ */
-  .intro {
-    margin-top: 2rem;
-    font-size: 0.95rem;
-    color: var(--sl-color-gray-4);
-    letter-spacing: 0.05em;
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.65s ease-out, transform 0.65s ease-out;
-  }
-  .intro.slide-up {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  /* ── Cards ── */
-  .cards {
+  /* ── 主体布局 ── */
+  .ide-layout {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1rem;
-    padding-bottom: 2rem;
+    grid-template-columns: 44px 180px 1fr;
+    min-height: 440px;
   }
 
-  @media (max-width: 600px) {
-    .cards { grid-template-columns: 1fr; }
-  }
-
-  .card {
+  /* 活动栏 */
+  .ide-activity-bar {
+    background: #16161e;
+    border-right: 1px solid rgba(255,255,255,0.05);
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
-    padding: 1.5rem;
-    background: var(--sl-color-gray-6);
-    border: 1px solid var(--sl-color-gray-5);
-    border-radius: 8px;
-    text-decoration: none;
-    transition: border-color 0.2s, background 0.2s,
-                opacity 0.6s ease-out, transform 0.6s ease-out;
-    opacity: 0;
-    transform: translateY(20px);
+    align-items: center;
+    padding: 8px 0;
+    gap: 4px;
   }
-  .card.slide-up {
-    opacity: 1;
-    transform: translateY(0);
+  .activity-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    color: #3b4261;
+    border-radius: 4px;
+    transition: color 0.15s;
   }
+  .activity-btn.active,
+  .activity-btn:hover { color: #c0caf5; }
 
-  .card:hover {
-    border-color: var(--sl-color-accent);
-    background: var(--sl-color-gray-5);
+  /* 文件树侧边栏 */
+  .ide-sidebar {
+    background: #1a1b26;
+    border-right: 1px solid rgba(255,255,255,0.05);
+    font-size: 0.78rem;
+    overflow: hidden;
   }
-
-  .card-title {
-    font-size: 1.05rem;
+  .sidebar-header {
+    padding: 10px 12px 6px;
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    color: #3b4261;
+    user-select: none;
+  }
+  .tree-root {
+    padding: 3px 12px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: #c0caf5;
     font-weight: 600;
-    color: var(--sl-color-accent-high);
+    font-size: 0.8rem;
+  }
+  .tree-arrow { color: #565f89; font-size: 0.7rem; }
+  .tree-item {
+    padding: 3px 12px 3px 20px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #a9b1d6;
+    cursor: pointer;
+    transition: background 0.1s;
+    white-space: nowrap;
+  }
+  .tree-item:hover { background: rgba(255,255,255,0.05); }
+  .tree-item.active {
+    background: rgba(122,162,247,0.15);
+    color: #c0caf5;
+  }
+  .tree-file-icon { color: #565f89; font-size: 0.85rem; }
+  .tree-folder-icon { color: #e0af68; font-size: 0.7rem; }
+  .tree-item a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  .tree-item:hover a { color: #7aa2f7; }
+
+  /* ── 编辑器 ── */
+  .ide-editor {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
   }
 
-  .card-desc {
-    font-size: 0.85rem;
-    color: var(--sl-color-gray-3);
-    line-height: 1.6;
+  /* 标签栏 */
+  .ide-tabs {
+    background: #16161e;
+    display: flex;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    flex-shrink: 0;
+  }
+  .tab {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    font-size: 0.78rem;
+    color: #565f89;
+    border-right: 1px solid rgba(255,255,255,0.05);
+    user-select: none;
+  }
+  .tab.active {
+    background: #1a1b26;
+    color: #c0caf5;
+    border-top: 1px solid #7aa2f7;
+  }
+  .tab-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: #e0af68;
+  }
+
+  /* 面包屑 */
+  .ide-breadcrumb {
+    padding: 5px 16px;
+    font-size: 0.72rem;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    flex-shrink: 0;
+  }
+  .bc-dim { color: #3b4261; }
+  .bc-sep { color: #3b4261; }
+  .bc-current { color: #737aa2; }
+
+  /* 正文 + 行号 */
+  .ide-content {
+    display: flex;
+    flex: 1;
+    overflow-y: auto;
+  }
+  .line-numbers {
+    padding: 16px 0;
+    min-width: 40px;
+    text-align: right;
+    padding-right: 14px;
+    display: flex;
+    flex-direction: column;
+    font-size: 0.78rem;
+    line-height: 1.85;
+    color: #3b4261;
+    user-select: none;
+    flex-shrink: 0;
+    border-right: 1px solid rgba(255,255,255,0.04);
+  }
+
+  .editor-body {
+    padding: 16px 24px;
+    font-size: clamp(0.85rem, 2vw, 0.95rem);
+    line-height: 1.85;
+    color: #c0caf5;
+    flex: 1;
+  }
+  .editor-body p { margin: 0; }
+
+  /* Markdown 语法高亮色 */
+  .md-marker   { color: #565f89; }
+  .md-h1       { color: #f7768e; font-weight: 700; font-size: 1.1em; }
+  .md-h2       { color: #e0af68; font-weight: 600; }
+  .md-blockquote { color: #737aa2; border-left: 2px solid #3b4261; padding-left: 10px; margin-left: 2px; }
+  .md-hr       { color: #3b4261; }
+  .md-li       { padding-left: 4px; }
+  .md-comment  { color: #565f89; }
+  .md-link     { color: #7dcfff; text-decoration: none; }
+  .md-link:hover { text-decoration: underline; }
+  .md-link-inline { color: #7aa2f7; text-decoration: none; cursor: pointer; }
+  .md-link-inline:hover { text-decoration: underline; }
+  .md-link-url { color: #9ece6a; }
+  .md-blank    { line-height: 1; height: 0.6em; }
+
+  .hl {
+    color: #ff9e64;
+    font-weight: 700;
+  }
+
+  /* 状态栏 */
+  .ide-statusbar {
+    background: #7aa2f7;
+    padding: 3px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.7rem;
+    color: #1a1b26;
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+  .status-left, .status-right {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+  }
+  .status-branch { font-weight: 700; }
+
+  /* ── 响应式：手机隐藏侧边 ── */
+  @media (max-width: 600px) {
+    .ide-layout {
+      grid-template-columns: 1fr;
+    }
+    .ide-activity-bar,
+    .ide-sidebar { display: none; }
   }
 </style>
