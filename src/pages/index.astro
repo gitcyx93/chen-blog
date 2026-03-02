@@ -17,24 +17,32 @@ const cards = [
   <div class="home">
     <div class="hero">
 
-      <!-- ── 终端打字机（替换原 h1） ── -->
+      <!-- ── 终端打字机 ── -->
       <div class="terminal-window">
         <div class="terminal-titlebar">
           <span class="dot dot-red"></span>
           <span class="dot dot-yellow"></span>
           <span class="dot dot-green"></span>
+          <span class="terminal-title">~/ 陈的笔记</span>
         </div>
         <div class="terminal-body">
-          <span class="prompt">❯&nbsp;</span><span id="typed-text"></span><span class="cursor" id="typed-cursor">█</span>
+          <div class="terminal-line path-line">
+            <span class="path-user">yuxiang</span><span class="path-at">@</span><span class="path-host">blog</span><span class="path-sep"> </span><span class="path-dir">~/陈的笔记</span>
+          </div>
+          <div class="terminal-line">
+            <span class="prompt">❯&nbsp;</span><span id="typed-text"></span><span class="cursor" id="typed-cursor">█</span>
+          </div>
         </div>
       </div>
 
-      <p class="sub">
+      <!-- 遮罩消散 -->
+      <p class="sub" id="sub-text">
         这里不用登录，没有广告，没有算法，没有审查。你不是产品。
         <a href="/about">了解这个站点 →</a>
       </p>
 
-      <p class="intro">逛逛看。</p>
+      <!-- 向上滑入 -->
+      <p class="intro" id="intro-text">逛逛看。</p>
     </div>
 
     <div class="cards">
@@ -51,7 +59,9 @@ const cards = [
 <script>
   const typedEl = document.getElementById('typed-text');
   const cursor  = document.getElementById('typed-cursor');
-  if (!typedEl || !cursor) throw new Error('typed elements missing');
+  const subEl   = document.getElementById('sub-text');
+  const introEl = document.getElementById('intro-text');
+  if (!typedEl || !cursor || !subEl || !introEl) throw new Error('elements missing');
 
   const segments = [
     { text: '你好，人类，欢迎你', hl: false },
@@ -65,8 +75,7 @@ const cards = [
     await sleep(300);
 
     for (const seg of segments) {
-      if (seg.hl) await sleep(420);  // "选择"前停顿
-
+      if (seg.hl) await sleep(420);
       for (const ch of [...seg.text]) {
         const span = document.createElement('span');
         if (seg.hl) span.className = 'hl';
@@ -74,10 +83,22 @@ const cards = [
         typedEl.appendChild(span);
         await sleep(seg.hl ? 160 : 65 + Math.random() * 55);
       }
-
-      if (seg.hl) await sleep(380);  // "选择"后停顿
+      if (seg.hl) await sleep(380);
     }
-    // 打完后光标持续闪烁，不消失
+
+    // 打完 → 遮罩消散
+    await sleep(350);
+    subEl.classList.add('reveal');
+
+    // 再停顿 → 向上滑入 (intro)
+    await sleep(500);
+    introEl.classList.add('slide-up');
+
+    // 卡片依次滑入
+    await sleep(300);
+    document.querySelectorAll<HTMLElement>('.card').forEach((card, i) => {
+      setTimeout(() => card.classList.add('slide-up'), i * 120);
+    });
   }
 
   run();
@@ -97,66 +118,97 @@ const cards = [
     padding: 4rem 0 3rem;
   }
 
-  /* ── 终端窗口（内嵌 hero） ── */
+  /* ══ 终端窗口 ══ */
   .terminal-window {
-    width: min(520px, 100%);
-    background: #3b4252;
+    width: min(680px, 100%);
+    background: #1e2029;
     border-radius: 10px;
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255,255,255,0.06);
     overflow: hidden;
     margin-bottom: 2.5rem;
   }
 
   .terminal-titlebar {
-    background: #434c5e;
-    padding: 10px 14px;
+    background: #2d303e;
+    padding: 10px 16px;
     display: flex;
     gap: 7px;
     align-items: center;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
   }
 
   .dot {
     width: 12px;
     height: 12px;
     border-radius: 50%;
+    flex-shrink: 0;
   }
-  .dot-red    { background: #bf616a; }
-  .dot-yellow { background: #ebcb8b; }
-  .dot-green  { background: #a3be8c; }
+  .dot-red    { background: #ff5f57; }
+  .dot-yellow { background: #febc2e; }
+  .dot-green  { background: #28c840; }
 
-  .terminal-body {
-    padding: 20px 24px 26px;
-    font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, 'Courier New', monospace;
-    font-size: clamp(1.05rem, 2.6vw, 1.25rem);
-    line-height: 1.7;
-    color: #d8dee9;
-    min-height: 3.2em;
-  }
-
-  .prompt {
-    color: #a3be8c;
+  .terminal-title {
+    flex: 1;
+    text-align: center;
+    font-family: ui-monospace, monospace;
+    font-size: 0.75rem;
+    color: #6b7280;
     user-select: none;
   }
 
-  /* 强调词（:global 因 JS 动态创建，无 Astro 作用域属性） */
+  .terminal-body {
+    padding: 18px 22px 24px;
+    font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, 'Courier New', monospace;
+    font-size: clamp(0.95rem, 2.4vw, 1.1rem);
+    line-height: 1.8;
+    color: #cdd6f4;
+  }
+
+  .terminal-line {
+    display: block;
+  }
+
+  /* 路径行 */
+  .path-line {
+    margin-bottom: 2px;
+  }
+  .path-user  { color: #a6e3a1; }
+  .path-at    { color: #6b7280; }
+  .path-host  { color: #89b4fa; }
+  .path-sep   { color: #6b7280; }
+  .path-dir   { color: #89dceb; }
+
+  .prompt {
+    color: #a6e3a1;
+    user-select: none;
+  }
+
+  /* 强调词（:global 因 JS 动态创建无 Astro 作用域属性） */
   :global(.hl) {
-    color: #ebcb8b;
+    color: #f9e2af;
     font-weight: 700;
     letter-spacing: 0.04em;
   }
 
   .cursor {
-    color: #88c0d0;
+    color: #cba6f7;
     animation: blink 0.85s step-end infinite;
   }
   @keyframes blink { 50% { opacity: 0; } }
 
-  /* ── Sub / Intro ── */
+  /* ══ 遮罩消散 (.sub) ══ */
   .sub {
     font-size: 1rem;
     color: var(--sl-color-gray-2);
     line-height: 1.75;
     max-width: 520px;
+    opacity: 0;
+    filter: blur(6px);
+    transition: opacity 0.9s ease-out, filter 0.9s ease-out;
+  }
+  .sub.reveal {
+    opacity: 1;
+    filter: blur(0);
   }
 
   .sub a {
@@ -167,11 +219,19 @@ const cards = [
   }
   .sub a:hover { opacity: 0.8; }
 
+  /* ══ 向上滑入 (.intro) ══ */
   .intro {
     margin-top: 2rem;
     font-size: 0.95rem;
     color: var(--sl-color-gray-4);
     letter-spacing: 0.05em;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.65s ease-out, transform 0.65s ease-out;
+  }
+  .intro.slide-up {
+    opacity: 1;
+    transform: translateY(0);
   }
 
   /* ── Cards ── */
@@ -195,7 +255,14 @@ const cards = [
     border: 1px solid var(--sl-color-gray-5);
     border-radius: 8px;
     text-decoration: none;
-    transition: border-color 0.2s, background 0.2s;
+    transition: border-color 0.2s, background 0.2s,
+                opacity 0.6s ease-out, transform 0.6s ease-out;
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  .card.slide-up {
+    opacity: 1;
+    transform: translateY(0);
   }
 
   .card:hover {
