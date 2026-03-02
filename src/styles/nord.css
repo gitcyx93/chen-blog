@@ -1,102 +1,148 @@
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap');
 
 /* ===================================================
-   Obsidian Nord 配色 — Starlight CSS 变量覆盖
-   完全沿用用户 Obsidian Nord 主题的原始颜色值
+   全站设计 Token — 唯一真源
+   Nord 配色 · 终端面板 + 书页正文双轨美学
    =================================================== */
 
-/* Nord 色板 */
 :root {
-  /* Polar Night */
-  --nord0: #2e3440;
-  --nord1: #3b4252;
-  --nord2: #434c5e;
-  --nord3: #4c566a;
-  /* Snow Storm */
-  --nord4: #d8dee9;
-  --nord5: #e5e9f0;
-  --nord6: #eceff4;
-  /* Frost */
-  --nord7: #8fbcbb;
-  --nord8: #88c0d0;
-  --nord9: #81a1c1;
-  --nord10: #5e81ac;
-  /* Aurora */
-  --nord11: #bf616a; /* red    — H1 */
-  --nord12: #d08770; /* orange */
-  --nord13: #ebcb8b; /* yellow — H2 */
-  --nord14: #a3be8c; /* green  — H3 */
-  --nord15: #b48ead; /* purple — links */
+  /* ── 背景层 ── */
+  --bg-base:     #2e3440;   /* 页面主背景 */
+  --bg-elevated: #3b4252;   /* 顶栏、侧栏、面板 */
+  --bg-panel:    #434c5e;   /* 行内代码、卡片 */
+
+  /* ── 文字层 ── */
+  --text-primary: #eceff4;  /* 强调、宣言、heading */
+  --text-body:    #d8dee9;  /* 正文阅读文字 */
+  --text-muted:   #4c566a;  /* 注释、元信息、dim */
+
+  /* ── 强调色（只用一个） ── */
+  --accent:     #88c0d0;   /* 链接、focus、主操作 */
+  --accent-dim: #5e81ac;   /* 激活背景、选中 */
+
+  /* ── 语义色（终端彩虹 / 标题层级） ── */
+  --color-green:  #a3be8c;  /* shell prompt、H3 */
+  --color-blue:   #81a1c1;  /* path host、目录名、H6 */
+  --color-yellow: #ebcb8b;  /* 高亮词、H2 */
+  --color-red:    #bf616a;  /* H1 */
+  --color-purple: #b48ead;  /* 光标、链接、H4 */
+  --color-teal:   #8fbcbb;  /* H5、行内代码 */
+
+  /* ── 结构 ── */
+  --border:  rgba(255, 255, 255, 0.08);  /* 全站统一 1px 边线 */
+  --radius:  6px;                         /* 全站统一圆角 */
 }
 
-/* Starlight 暗色主题覆盖（用户默认暗色） */
+/* ── Starlight 颜色变量映射 ── */
 :root[data-theme='dark'],
 :root {
-  --sl-color-accent-low:  var(--nord10); /* #5e81ac 深蓝 */
-  --sl-color-accent:      var(--nord8);  /* #88c0d0 冰蓝 主色 */
-  --sl-color-accent-high: var(--nord7);  /* #8fbcbb 青色 */
+  --sl-color-accent-low:  var(--accent-dim);
+  --sl-color-accent:      var(--accent);
+  --sl-color-accent-high: var(--color-teal);
 
-  --sl-color-white:  var(--nord6);  /* #eceff4 */
-  --sl-color-gray-1: var(--nord5);  /* #e5e9f0 */
-  --sl-color-gray-2: var(--nord4);  /* #d8dee9 */
-  --sl-color-gray-3: var(--nord3);  /* #4c566a */
-  --sl-color-gray-4: var(--nord2);  /* #434c5e */
-  --sl-color-gray-5: var(--nord1);  /* #3b4252 */
-  --sl-color-gray-6: var(--nord0);  /* #2e3440 */
+  --sl-color-white:  var(--text-primary);
+  --sl-color-gray-1: #e5e9f0;
+  --sl-color-gray-2: var(--text-body);
+  --sl-color-gray-3: var(--text-muted);
+  --sl-color-gray-4: var(--bg-panel);
+  --sl-color-gray-5: var(--bg-elevated);
+  --sl-color-gray-6: var(--bg-base);
   --sl-color-black:  #242831;
 }
 
-/* ── 正文标题颜色（复刻 Obsidian Nord）── */
-.sl-markdown-content h1 { color: var(--nord11); } /* red    */
-.sl-markdown-content h2 { color: var(--nord13); } /* yellow */
-.sl-markdown-content h3 { color: var(--nord14); } /* green  */
-.sl-markdown-content h4 { color: var(--nord15); } /* purple */
-.sl-markdown-content h5 { color: var(--nord7);  } /* teal   */
-.sl-markdown-content h6 { color: var(--nord9);  } /* blue   */
+/* ===================================================
+   字体策略：UI 用等宽，正文用系统字体
+   =================================================== */
 
-/* ── 链接 ── */
+/* UI / Shell 元素：JetBrains Mono */
+header.header,
+.site-title,
+[class*="sidebar"],
+nav[aria-label],
+.sl-markdown-content :not(pre) > code,
+.sl-markdown-content pre,
+time,
+[class*="breadcrumb"],
+[class*="PageTitle"],
+.meta,
+[class*="pagination"] {
+  font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+}
+
+/* 正文：不覆盖 --sl-font，让 Starlight 使用系统可读字体 */
+.sl-markdown-content {
+  font-size: 1rem;
+  line-height: 1.85;
+  /* 限制行宽：提升长文阅读舒适度 */
+  max-width: 70ch;
+}
+
+/* ===================================================
+   标题层级（Nord Aurora 色彩）
+   =================================================== */
+.sl-markdown-content h1 { color: var(--color-red);    }
+.sl-markdown-content h2 { color: var(--color-yellow); }
+.sl-markdown-content h3 { color: var(--color-green);  }
+.sl-markdown-content h4 { color: var(--color-purple); }
+.sl-markdown-content h5 { color: var(--color-teal);   }
+.sl-markdown-content h6 { color: var(--color-blue);   }
+
+/* ===================================================
+   链接：克制，用亮度/下划线做 hover
+   =================================================== */
 .sl-markdown-content a {
-  color: var(--nord15);           /* purple，与 Obsidian Nord 一致 */
+  color: var(--accent);
   text-decoration-color: transparent;
   transition: color 0.15s, text-decoration-color 0.15s;
 }
 .sl-markdown-content a:hover {
-  color: var(--nord9);
-  text-decoration-color: var(--nord9);
+  color: var(--color-teal);
+  text-decoration-color: var(--color-teal);
 }
 
-/* ── 引用块 ── */
-.sl-markdown-content blockquote {
-  border-inline-start-color: var(--nord10);
-  background: color-mix(in srgb, var(--nord1) 60%, transparent);
+/* ===================================================
+   代码块：终端美学的视觉桥梁
+   =================================================== */
+.sl-markdown-content pre {
+  background: var(--bg-elevated) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius) !important;
 }
 
-/* ── 行内代码 ── */
 .sl-markdown-content :not(pre) > code {
-  color: var(--nord7);
-  background: var(--nord1);
+  color: var(--color-teal);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 0.1em 0.35em;
+  font-size: 0.88em;
 }
 
-/* ── 粗体 ── */
+/* ===================================================
+   引用块 / Callout：细边线面板风，不用大色块
+   =================================================== */
+.sl-markdown-content blockquote {
+  border-inline-start: 2px solid var(--accent-dim);
+  background: color-mix(in srgb, var(--bg-elevated) 50%, transparent);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  padding: 0.75em 1.25em;
+  margin-inline: 0;
+  color: var(--text-body);
+}
+
+/* ===================================================
+   粗体
+   =================================================== */
 .sl-markdown-content strong {
-  color: var(--nord6);
+  color: var(--text-primary);
 }
 
-/* ── 字体：正文用衬线，提升阅读舒适度 ── */
-.sl-markdown-content {
-  font-size: 1rem;
-  line-height: 1.85;
-}
-
-/* ── 侧边栏 & 顶栏：等宽字体 ── */
-:root {
-  --sl-font: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
-}
-
-/* ── 顶栏终端化 ── */
+/* ===================================================
+   顶栏：状态栏/路径栏风格，轻薄克制
+   =================================================== */
 header.header {
-  background: var(--nord1) !important;
-  border-bottom: 1px solid var(--nord2) !important;
+  background: var(--bg-elevated) !important;
+  border-bottom: 1px solid var(--border) !important;
 }
 
 .site-title {
@@ -104,48 +150,68 @@ header.header {
   letter-spacing: 0.02em;
 }
 
+/* ❯ 前缀：终端入口感 */
 .site-title::before {
   content: '❯ ';
-  color: var(--nord14); /* Nord green */
+  color: var(--color-green);
   font-weight: 700;
 }
 
-/* ── Obsidian [[双链]] 样式 ── */
+/* ===================================================
+   侧栏：索引区，退后让正文当舞台
+   =================================================== */
+[class*="sidebar"] {
+  background: color-mix(in srgb, var(--bg-base) 97%, transparent) !important;
+  border-inline-end: 1px solid var(--border) !important;
+  font-size: 0.82rem;
+}
 
-/* 已解析的内部链接 */
+/* 非激活侧栏项：更淡，减少压迫感 */
+:global(.sidebar) a:not([aria-current='page']) {
+  opacity: 0.65;
+  transition: opacity 0.15s;
+}
+:global(.sidebar) a:not([aria-current='page']):hover {
+  opacity: 1;
+}
+
+/* 激活项 */
+[aria-current='page'] {
+  background-color: color-mix(in srgb, var(--accent-dim) 20%, transparent) !important;
+  color: var(--accent) !important;
+  border-inline-start-color: var(--accent) !important;
+}
+
+/* ===================================================
+   双链样式
+   =================================================== */
 .sl-markdown-content .internal-link {
-  color: var(--nord9);                       /* frost 蓝 */
-  background: color-mix(in srgb, var(--nord9) 10%, transparent);
+  color: var(--color-blue);
+  background: color-mix(in srgb, var(--color-blue) 10%, transparent);
   border-radius: 3px;
   padding: 0 0.2em;
   text-decoration: none;
   transition: background 0.15s, color 0.15s;
 }
 .sl-markdown-content .internal-link:hover {
-  background: color-mix(in srgb, var(--nord9) 20%, transparent);
-  color: var(--nord8);
+  background: color-mix(in srgb, var(--color-blue) 20%, transparent);
+  color: var(--accent);
 }
 
-/* 断链（目标页面不存在） */
 .sl-markdown-content .internal-link.broken {
-  color: var(--nord11);                      /* aurora 红 */
-  background: color-mix(in srgb, var(--nord11) 10%, transparent);
+  color: var(--color-red);
+  background: color-mix(in srgb, var(--color-red) 10%, transparent);
   text-decoration: line-through;
   cursor: not-allowed;
 }
 
-/* ── 侧边栏激活项 ── */
-[aria-current='page'] {
-  background-color: color-mix(in srgb, var(--nord10) 20%, transparent) !important;
-  color: var(--nord8) !important;
-  border-inline-start-color: var(--nord8) !important;
-}
-
-/* ── 文章封面图 ── */
+/* ===================================================
+   文章封面图
+   =================================================== */
 .article-cover-wrapper {
   width: 100%;
   margin-bottom: 2rem;
-  border-radius: 10px;
+  border-radius: var(--radius);
   overflow: hidden;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
