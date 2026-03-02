@@ -145,9 +145,11 @@ time,
 header.header {
   background: var(--bg-elevated) !important;
   border-bottom: 1px solid var(--border) !important;
-  position: relative;
-  height: auto !important;   /* 由两行内容自然撑开 */
-  padding: 0 !important;     /* Header 组件内部控制 padding */
+  position: sticky !important;   /* 恢复 sticky；同时作为 ::before dots 的定位祖先 */
+  top: 0 !important;
+  z-index: 10 !important;
+  height: auto !important;       /* 由两行内容自然撑开 */
+  padding: 0 !important;         /* Header 组件内部控制 padding */
 }
 
 /* Starlight 可能给内层 div 设宽度，确保填满 */
