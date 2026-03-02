@@ -209,39 +209,11 @@ header.header::before {
   opacity: 1;
 }
 
-/* 激活项：去掉左边框，改用 ❯ 前缀 */
+/* 激活项 */
 [aria-current='page'] {
-  background-color: transparent !important;
+  background-color: color-mix(in srgb, var(--accent-dim) 20%, transparent) !important;
   color: var(--accent) !important;
-  border-inline-start-color: transparent !important;
-  opacity: 1 !important;
-}
-[aria-current='page']::before {
-  content: '❯ ';
-  color: var(--color-green);
-  font-weight: 700;
-}
-
-/* 侧栏折叠箭头：隐藏 SVG caret，改用终端风格 [+]/[-] */
-[class*="sidebar"] .caret {
-  display: none;
-}
-
-/* 分组 summary 行：[+]/[-] 前缀，修正 flex 布局防止撑开 */
-[class*="sidebar"] details > summary {
-  justify-content: flex-start !important;
-  gap: 0.4em;
-}
-[class*="sidebar"] details > summary::before {
-  content: '[+]';
-  color: var(--text-muted);
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: 0.78rem;
-  flex-shrink: 0;
-}
-[class*="sidebar"] details[open] > summary::before {
-  content: '[-]';
-  color: var(--color-green);
+  border-inline-start-color: var(--accent) !important;
 }
 
 /* ===================================================
