@@ -396,16 +396,17 @@ nav.sidebar {
     overflow: visible !important;
   }
 
-  /* 正文轻微偏左 */
-  html[data-has-sidebar][data-has-toc] .main-pane {
+  /* 正文偏左：直接调整容器边距，而非视觉 transform */
+  html[data-has-sidebar] .main-pane {
     width: 100% !important;
     --sl-content-margin-inline: auto;
   }
 
-  /* 强制正文容器与变量一致，避免被默认规则推偏 */
-  html[data-has-sidebar][data-has-toc] .main-pane .content-panel .sl-container {
-    margin-inline: auto !important;
-    transform: translateX(-0.8rem);
+  /* 左移强度：4rem（可继续调） */
+  html[data-has-sidebar] .main-pane .content-panel .sl-container {
+    margin-inline-start: max(1rem, calc((100% - min(56rem, 100%)) / 2 - 4rem)) !important;
+    margin-inline-end: auto !important;
+    transform: none;
   }
 
   /* 右侧导航去底色，直接使用页面背景 */
