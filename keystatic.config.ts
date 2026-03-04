@@ -62,7 +62,7 @@ export default config({
   storage,
 
   ui: {
-    brand: { name: '陈的笔记' },
+    brand: { name: 'yuxiang@blog' },
   },
 
   collections: {

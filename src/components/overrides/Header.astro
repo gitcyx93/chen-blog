@@ -14,18 +14,23 @@ const segments = pathname.split('/').filter(Boolean);
 const dirs = segments.slice(0, -1);
 
 const p = Astro.url.pathname;
-const isNotes = !p.startsWith('/blog') && !p.startsWith('/tools') && !p.startsWith('/about') && p !== '/';
+const isNotes = p.startsWith('/notes') ||
+  (!p.startsWith('/blog') && !p.startsWith('/tools') && !p.startsWith('/read-me') && !p.startsWith('/contact') && p !== '/');
 ---
 
 <div class="header-wrapper">
   <!-- 行1：导航 -->
   <div class="nav-row">
-    <nav class="nav-links">
-      <a href="/blog"                    class={p.startsWith('/blog')    ? 'active' : ''}>文章</a>
-      <a href="/psychology/human-vs-ai/" class={isNotes                  ? 'active' : ''}>笔记</a>
-      <a href="/tools"                   class={p.startsWith('/tools')   ? 'active' : ''}>工具箱</a>
-      <a href="/about"                   class={p.startsWith('/about')   ? 'active' : ''}>关于</a>
-    </nav>
+    <div class="nav-main">
+      <span class="nav-divider" aria-hidden="true"></span>
+      <nav class="nav-links">
+        <a href="/"                       class={p === '/'                ? 'active' : ''}>首页</a>
+        <a href="/blog"                   class={p.startsWith('/blog')    ? 'active' : ''}>文章</a>
+        <a href="/notes"                  class={isNotes                  ? 'active' : ''}>笔记</a>
+        <a href="/tools"                  class={p.startsWith('/tools')   ? 'active' : ''}>工具箱</a>
+        <a href="/read-me/"               class={p.startsWith('/read-me') ? 'active' : ''}>Read Me</a>
+      </nav>
+    </div>
     <div class="nav-actions">
       <Search {...Astro.props} />
       <ThemeSelect {...Astro.props} />
@@ -58,13 +63,28 @@ const isNotes = !p.startsWith('/blog') && !p.startsWith('/tools') && !p.startsWi
     align-items: center;
     justify-content: space-between;
     height: 3.5rem;
-    padding-left: 72px;   /* 给 macOS 三点留位 */
+    padding-left: 94px;   /* 给 macOS 三点 + 分隔留位 */
     padding-right: 1rem;
+    gap: 1rem;
+  }
+
+  .nav-main {
+    display: flex;
+    align-items: center;
+    margin-left: 0.6rem; /* 整体向中间再推一点 */
+  }
+
+  .nav-divider {
+    width: 1px;
+    height: 1.1rem;
+    background: var(--border);
+    margin-right: 1.15rem;
+    opacity: 0.95;
   }
 
   .nav-links {
     display: flex;
-    gap: 1.75rem;
+    gap: 1.6rem;
     align-items: center;
   }
 
@@ -107,3 +127,142 @@ const isNotes = !p.startsWith('/blog') && !p.startsWith('/tools') && !p.startsWi
   .tp-dir   { color: var(--color-blue);  }
   .tp-title { color: var(--text-body);   }
 </style>
+
+<script>
+  // ── 左侧边栏折叠：[ 键 ──
+  const K_L = 'sl-hide-left';
+  const root = document.documentElement;
+
+  function apply() {
+    const hl = localStorage.getItem(K_L) === '1';
+    root.toggleAttribute('data-hide-left', hl);
+    const bl = document.getElementById('sl-btn-left');
+    if (bl) bl.textContent = hl ? '›' : '‹';
+  }
+
+  function toggleL() {
+    localStorage.setItem(K_L, localStorage.getItem(K_L) === '1' ? '0' : '1');
+    apply();
+  }
+
+  // 立即应用（避免闪烁）
+  apply();
+
+  // 键盘快捷键
+  document.addEventListener('keydown', e => {
+    if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+    if (e.key === '[') { e.preventDefault(); toggleL(); }
+  });
+
+  // 插入折叠按钮
+  function addButtons() {
+    if (!document.getElementById('sl-btn-left')) {
+      const bl = document.createElement('button');
+      bl.id        = 'sl-btn-left';
+      bl.className = 'sl-sidebar-btn sl-sidebar-btn-left';
+      bl.textContent = '‹';
+      bl.setAttribute('aria-label', '收起左侧栏');
+      bl.onclick   = toggleL;
+      document.body.appendChild(bl);
+    }
+    apply();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', addButtons);
+  } else {
+    addButtons();
+  }
+
+  // ── Neovim 状态栏：注入到文章正文末尾 ──
+  function injectNeovimBar() {
+    const meta = document.getElementById('article-meta');
+    const content = document.querySelector('.sl-markdown-content');
+    if (!meta || !content) return;
+    if (document.getElementById('nvim-bar')) return;
+
+    const filename = meta.dataset.filename ?? '';
+    const category = meta.dataset.category ?? '';
+    const date     = meta.dataset.date ?? '';
+    const tags     = meta.dataset.tags ? meta.dataset.tags.split(',').filter(Boolean) : [];
+
+    const bar = document.createElement('div');
+    bar.id = 'nvim-bar';
+    bar.className = 'neovim-statusbar';
+
+    const tagsHtml = tags.length
+      ? `<span class="nvim-sep">│</span><span class="nvim-tags">${tags.join(' · ')}</span>`
+      : '';
+    const dateHtml = date
+      ? `<span>${date}</span><span class="nvim-sep">│</span>`
+      : '';
+
+    bar.innerHTML = `
+      <div class="nvim-left">
+        <span class="nvim-mode"> READ </span>
+        <span class="nvim-file">${category ? category + '/' : ''}${filename}</span>
+        ${tagsHtml}
+      </div>
+      <div class="nvim-right">
+        ${dateHtml}
+        <span>EOF</span>
+      </div>
+    `;
+
+    content.after(bar);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', injectNeovimBar);
+  } else {
+    injectNeovimBar();
+  }
+
+  // ── 阅读进度条（仅长文：scrollHeight > viewport × 2.5）──
+  function injectReadingProgress() {
+    if (!document.querySelector('.sl-markdown-content')) return;
+    if (document.getElementById('reading-progress')) return;
+
+    // 短文跳过（< 3.5× viewport 高度，约 3 min 以下）
+    if (document.documentElement.scrollHeight <= window.innerHeight * 3.5) return;
+
+    const track = document.createElement('div');
+    track.id = 'reading-progress';
+
+    const fill = document.createElement('div');
+    fill.id = 'reading-progress-fill';
+    track.appendChild(fill);
+
+    const pct = document.createElement('div');
+    pct.id = 'reading-progress-pct';
+    pct.textContent = '0%';
+
+    document.body.appendChild(track);
+    document.body.appendChild(pct);
+
+    function update() {
+      const scrollTop  = window.scrollY;
+      const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+      const ratio      = scrollable > 0 ? Math.min(1, scrollTop / scrollable) : 0;
+      const percent    = Math.round(ratio * 100);
+
+      fill.style.height = percent + '%';
+      pct.textContent   = percent + '%';
+      // 显示在进度条当前填充终点旁
+      pct.style.top = Math.max(2, ratio * (window.innerHeight - 20)) + 'px';
+    }
+
+    // 悬停进度条时显示百分比
+    track.addEventListener('mouseenter', () => pct.classList.add('visible'));
+    track.addEventListener('mouseleave', () => pct.classList.remove('visible'));
+
+    window.addEventListener('scroll', update, { passive: true });
+    update();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', injectReadingProgress);
+  } else {
+    injectReadingProgress();
+  }
+</script>

@@ -13,8 +13,8 @@
 
   /* ── 文字层 ── */
   --text-primary: #eceff4;  /* 强调、宣言、heading */
-  --text-body:    #d8dee9;  /* 正文阅读文字 */
-  --text-muted:   #4c566a;  /* 注释、元信息、dim */
+  --text-body:    #e6ecf5;  /* 正文阅读文字（Ghostty A：更高对比） */
+  --text-muted:   #6b7893;  /* 注释、元信息、dim（Ghostty A：更高对比） */
 
   /* ── 强调色（只用一个） ── */
   --accent:     #88c0d0;   /* 链接、focus、主操作 */
@@ -71,10 +71,31 @@ time,
 
 /* 正文：不覆盖 --sl-font，让 Starlight 使用系统可读字体 */
 .sl-markdown-content {
-  font-size: 1rem;
-  line-height: 1.85;
+  font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, 'SFMono-Regular', Menlo, Monaco, Consolas, monospace;
+  font-size: 1.08rem;
+  line-height: 1.62;
+  letter-spacing: 0.01em;
+  font-variant-ligatures: none;
+  font-feature-settings: 'liga' 0, 'calt' 0;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
   /* 限制行宽：提升长文阅读舒适度 */
-  max-width: 70ch;
+  max-width: 86ch;
+}
+
+/* 放宽正文容器（有左侧栏时），让文章主体横向更长 */
+html[data-has-sidebar] .main-pane .content-panel .sl-container {
+  max-width: 56rem;
+}
+
+/* 收紧默认段落节奏，减少“空荡感” */
+.sl-markdown-content :is(p, ul, ol, blockquote, pre) {
+  margin-block: 0.76rem;
+}
+.sl-markdown-content :is(h1, h2, h3) {
+  line-height: 1.28;
+  margin-top: 1.35rem;
+  margin-bottom: 0.5rem;
 }
 
 /* ===================================================
@@ -88,16 +109,18 @@ time,
 .sl-markdown-content h6 { color: var(--color-blue);   }
 
 /* ===================================================
-   链接：克制，用亮度/下划线做 hover
+   链接：hover 时变色 + 发光
    =================================================== */
 .sl-markdown-content a {
   color: var(--accent);
   text-decoration-color: transparent;
-  transition: color 0.15s, text-decoration-color 0.15s;
+  transition: color 0.2s, text-decoration-color 0.2s, text-shadow 0.2s;
 }
 .sl-markdown-content a:hover {
   color: var(--color-teal);
   text-decoration-color: var(--color-teal);
+  text-shadow: 0 0 6px color-mix(in srgb, var(--color-teal) 55%, transparent),
+               0 0 16px color-mix(in srgb, var(--color-teal) 20%, transparent);
 }
 
 /* ===================================================
@@ -135,7 +158,8 @@ time,
    粗体
    =================================================== */
 .sl-markdown-content strong {
-  color: var(--text-primary);
+  color: var(--color-yellow);
+  font-weight: 600;
 }
 
 /* ===================================================
@@ -161,6 +185,7 @@ header.header > * {
 :root,
 :root[data-theme='dark'] {
   --sl-nav-height: 5.25rem; /* 3.5rem nav + ~1.75rem path bar */
+  --sl-sidebar-width: 19rem;
 }
 
 /* macOS 三点：垂直居中于第一行（3.5rem 高） */
@@ -202,7 +227,7 @@ header.header::before {
 
 /* 非激活侧栏项：更淡，减少压迫感 */
 [class*="sidebar"] a:not([aria-current='page']) {
-  opacity: 0.65;
+  opacity: 0.74;
   transition: opacity 0.15s;
 }
 [class*="sidebar"] a:not([aria-current='page']):hover {
@@ -217,14 +242,24 @@ header.header::before {
   opacity: 1 !important;
 }
 
-/* ❯ 前缀：标记当前页 */
+/* 侧栏目录符号：开关 + 文件夹图标 */
+[class*="sidebar"] a::before {
+  content: '';
+  display: inline-block;
+  width: 0.95rem;
+  height: 0.72rem;
+  margin-right: 0.42rem;
+  vertical-align: -0.06rem;
+  opacity: 0.9;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 16'%3E%3Cpath d='M1.5 5.5h6.7l2.2-2.5h12v10.5a2 2 0 0 1-2 2H3.5a2 2 0 0 1-2-2z' fill='none' stroke='%239eafcc' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
 [class*="sidebar"] [aria-current='page']::before {
-  content: '❯ ';
-  color: var(--color-green);
-  font-weight: 700;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 16'%3E%3Cpath d='M1.5 5.5h6.7l2.2-2.5h12v10.5a2 2 0 0 1-2 2H3.5a2 2 0 0 1-2-2z' fill='none' stroke='%23a3be8c' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
 }
 
-/* 折叠箭头：隐藏默认 SVG caret，改用 [+]/[-] */
+/* 折叠箭头：隐藏默认 SVG caret，改用 ▸ / ▾ */
 [class*="sidebar"] .caret {
   display: none;
 }
@@ -233,15 +268,32 @@ header.header::before {
   gap: 0.4em;
 }
 [class*="sidebar"] details > summary::before {
-  content: '[+]';
+  content: '▸ ';
   color: var(--text-muted);
   font-family: 'JetBrains Mono', ui-monospace, monospace;
   font-size: 0.78rem;
+  font-weight: 700;
   flex-shrink: 0;
 }
 [class*="sidebar"] details[open] > summary::before {
-  content: '[-]';
+  content: '▾ ';
   color: var(--color-green);
+}
+[class*="sidebar"] details > summary::after {
+  content: '';
+  display: inline-block;
+  width: 0.95rem;
+  height: 0.72rem;
+  margin-left: -0.18rem;
+  margin-right: 0.42rem;
+  vertical-align: -0.06rem;
+  opacity: 0.9;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 16'%3E%3Cpath d='M1.5 5.5h6.7l2.2-2.5h12v10.5a2 2 0 0 1-2 2H3.5a2 2 0 0 1-2-2z' fill='none' stroke='%239eafcc' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+[class*="sidebar"] details[open] > summary::after {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 16'%3E%3Cpath d='M1.5 5.5h6.7l2.2-2.5h12v10.5a2 2 0 0 1-2 2H3.5a2 2 0 0 1-2-2z' fill='none' stroke='%23a3be8c' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
 }
 
 /* ===================================================
@@ -253,11 +305,13 @@ header.header::before {
   border-radius: 3px;
   padding: 0 0.2em;
   text-decoration: none;
-  transition: background 0.15s, color 0.15s;
+  transition: background 0.2s, color 0.2s, text-shadow 0.2s;
 }
 .sl-markdown-content .internal-link:hover {
   background: color-mix(in srgb, var(--color-blue) 20%, transparent);
   color: var(--accent);
+  text-shadow: 0 0 6px color-mix(in srgb, var(--color-blue) 70%, transparent),
+               0 0 16px color-mix(in srgb, var(--color-blue) 25%, transparent);
 }
 
 .sl-markdown-content .internal-link.broken {
@@ -265,6 +319,136 @@ header.header::before {
   background: color-mix(in srgb, var(--color-red) 10%, transparent);
   text-decoration: line-through;
   cursor: not-allowed;
+}
+
+/* ===================================================
+   左侧边栏可折叠 — Focus Mode
+   快捷键：[ 收起/展开左栏
+   =================================================== */
+
+nav.sidebar {
+  transition: width 0.22s ease, min-width 0.22s ease,
+              padding 0.22s ease, opacity 0.22s ease;
+}
+
+:root[data-hide-left] nav.sidebar {
+  width: 0 !important;
+  min-width: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  opacity: 0;
+  border: none !important;
+}
+
+/* 折叠按钮 */
+.sl-sidebar-btn {
+  position: fixed;
+  top: calc(var(--sl-nav-height, 5.25rem) + 2.5rem);
+  z-index: 100;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 0.7rem;
+  width: 14px;
+  height: 48px;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.15s, color 0.15s, background 0.15s, left 0.22s ease;
+}
+
+.sl-sidebar-btn:hover,
+.sl-sidebar-btn:focus-visible,
+:root[data-hide-left] .sl-sidebar-btn-left {
+  opacity: 1;
+}
+
+.sl-sidebar-btn:hover {
+  color: var(--accent);
+  background: var(--bg-panel);
+}
+
+.sl-sidebar-btn-left {
+  left: var(--sl-sidebar-width, 19rem);
+  border-left: none;
+  border-radius: 0 3px 3px 0;
+}
+:root[data-hide-left] .sl-sidebar-btn-left {
+  left: 0;
+}
+
+@media (max-width: 72rem) {
+  .sl-sidebar-btn { display: none !important; }
+}
+
+/* ===================================================
+   右侧 TOC：弱化存在感（更窄 + 极轻分隔线）
+   =================================================== */
+@media (min-width: 72rem) {
+  /* 取消右侧 TOC 在文档流中的大块占位，仅保留固定浮层 */
+  html[data-has-sidebar][data-has-toc] .right-sidebar-container {
+    width: 0 !important;
+    min-width: 0 !important;
+    overflow: visible !important;
+  }
+
+  /* 正文轻微偏左 */
+  html[data-has-sidebar][data-has-toc] .main-pane {
+    width: 100% !important;
+    --sl-content-margin-inline: auto;
+  }
+
+  /* 强制正文容器与变量一致，避免被默认规则推偏 */
+  html[data-has-sidebar][data-has-toc] .main-pane .content-panel .sl-container {
+    margin-inline: auto !important;
+    transform: translateX(-0.8rem);
+  }
+
+  /* 右侧导航去底色，直接使用页面背景 */
+  .right-sidebar-container,
+  .right-sidebar-panel,
+  .right-sidebar-panel .sl-container {
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  .right-sidebar {
+    inset-inline-start: auto !important;
+    inset-inline-end: 0 !important;
+    width: 11.5rem !important;
+    border-inline-start: 1px solid color-mix(in srgb, var(--border) 24%, transparent) !important;
+    background: transparent !important;
+  }
+
+  .right-sidebar-panel {
+    padding: 0.75rem 0.6rem 0.75rem 0.6rem !important;
+    opacity: 0.74;
+  }
+
+  .right-sidebar-panel .sl-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-inline-start: 0 !important;
+    margin-inline-end: 0 !important;
+  }
+
+  .right-sidebar-panel h2 {
+    font-size: 0.78rem !important;
+    opacity: 0.64;
+    letter-spacing: 0.02em;
+  }
+
+  .right-sidebar-panel :where(a) {
+    opacity: 0.72;
+  }
+
+  .right-sidebar-panel :where(a:hover) {
+    opacity: 0.95;
+  }
 }
 
 /* ===================================================
@@ -283,4 +467,209 @@ header.header::before {
   height: 320px;
   object-fit: cover;
   display: block;
+}
+
+/* ===================================================
+   终端阅读器：cat 命令行 + 前置元数据卡片
+   =================================================== */
+
+.cat-prompt {
+  font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+  font-size: 0.82rem;
+  margin-bottom: 0.85rem;
+  line-height: 1.5;
+  opacity: 0.9;
+}
+.cp-user { color: var(--color-green); }
+.cp-host { color: var(--color-blue); }
+.cp-dim  { color: var(--text-muted); }
+.cp-file { color: var(--text-body); }
+
+.frontmatter-card {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent-dim);
+  border-radius: var(--radius);
+  padding: 0.6em 0.9em;
+  margin-bottom: 0.3rem;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 0.79rem;
+  line-height: 1.8;
+}
+.fm-sep  { color: var(--text-muted); }
+.fm-row  { display: flex; gap: 0.6em; align-items: baseline; flex-wrap: wrap; }
+.fm-key  { color: var(--color-teal); flex-shrink: 0; }
+.fm-val  { color: var(--text-body); }
+.fm-title { color: var(--text-primary); }
+.fm-tags  { display: inline-flex; gap: 0.3em; flex-wrap: wrap; }
+.fm-tag  {
+  color: var(--color-purple);
+  background: color-mix(in srgb, var(--color-purple) 12%, transparent);
+  border-radius: 3px;
+  padding: 0 0.35em;
+}
+
+/* ===================================================
+   h2 / h3 Markdown 前缀（终端 cat 输出感）
+   =================================================== */
+
+.sl-markdown-content h3::before {
+  content: '### ';
+  color: var(--text-muted);
+  font-weight: 400;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+/* ===================================================
+   引用块：终端 ADVISORY 标签
+   =================================================== */
+
+.sl-markdown-content blockquote::before {
+  content: '◆ ADVISORY::NOTE';
+  display: block;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 0.68rem;
+  color: var(--accent);
+  letter-spacing: 0.08em;
+  margin-bottom: 0.4em;
+  font-weight: 600;
+  opacity: 0.75;
+}
+
+/* ===================================================
+   Neovim 状态栏（文章底部）
+   =================================================== */
+
+.neovim-statusbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-top: 2px solid var(--accent-dim);
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 0.72rem;
+  padding: 0.25em 0.85em;
+  border-radius: 0 0 var(--radius) var(--radius);
+  margin-top: 2.5rem;
+  margin-bottom: 0.5rem;
+  user-select: none;
+  color: var(--text-muted);
+}
+.nvim-left  { display: flex; gap: 0.75em; align-items: center; }
+.nvim-right { display: flex; gap: 0.75em; align-items: center; }
+.nvim-mode  {
+  background: var(--accent-dim);
+  color: var(--text-primary);
+  padding: 0 0.55em;
+  border-radius: 2px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+.nvim-file { color: var(--text-body); }
+.nvim-sep  { opacity: 0.4; }
+.nvim-tags { color: var(--color-teal); }
+
+/* ===================================================
+   右侧 article.info 面板
+   =================================================== */
+
+.article-info-panel {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 0.78rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-top: 0.5rem;
+}
+
+.ai-header {
+  background: var(--bg-elevated);
+  border-bottom: 1px solid var(--border);
+  padding: 0.35em 0.75em;
+  color: var(--color-teal);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+}
+.ai-header::before { content: '[ '; color: var(--text-muted); }
+.ai-header::after  { content: ' ]'; color: var(--text-muted); }
+
+.ai-body {
+  padding: 0.65em 0.75em;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4em;
+  background: var(--bg-base);
+}
+
+.ai-row {
+  display: flex;
+  gap: 0.5em;
+  align-items: baseline;
+}
+.ai-row-tags { align-items: flex-start; }
+
+.ai-key {
+  color: var(--color-teal);
+  flex-shrink: 0;
+  min-width: 5.5ch;
+  opacity: 0.85;
+}
+.ai-val { color: var(--text-body); }
+
+.ai-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35em;
+}
+.ai-tag {
+  color: var(--color-purple);
+  background: color-mix(in srgb, var(--color-purple) 12%, transparent);
+  border-radius: 3px;
+  padding: 0 0.35em;
+  line-height: 1.6;
+}
+
+/* ===================================================
+   阅读进度条（仅长文，scrollHeight > 2.5× viewport）
+   =================================================== */
+
+#reading-progress {
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: 3px;
+  height: 100dvh;
+  background: color-mix(in srgb, var(--border) 60%, transparent);
+  z-index: 200;
+  pointer-events: none;
+}
+
+#reading-progress-fill {
+  width: 100%;
+  height: 0%;
+  background: var(--accent);
+  transition: height 0.08s linear;
+}
+
+/* 悬停时在进度条旁显示百分比 */
+#reading-progress-pct {
+  position: fixed;
+  right: 8px;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 0.65rem;
+  color: var(--accent);
+  opacity: 0;
+  transition: opacity 0.15s;
+  pointer-events: none;
+  z-index: 201;
+  white-space: nowrap;
+}
+#reading-progress:hover + #reading-progress-pct,
+#reading-progress-pct.visible {
+  opacity: 1;
+}
+
+@media (max-width: 72rem) {
+  #reading-progress { display: none; }
 }

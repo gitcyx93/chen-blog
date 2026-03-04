@@ -3,18 +3,19 @@ title: "非语言桥梁：好对话里身体说了什么"
 description: "在良好的对话中，人们通过前倾、手势、点头、脚部移动等方式拉近彼此的物理距离。"
 ---
 
-### When someone is trying to bridge the distance between you.  
-That could be a lean—lean is one of them, but it also could be a reach out.  
-  - 这可能是一个前倾，前倾是一种方式，但也可能是伸出手。  
-- We noticed that in good conversations, people were trying to physically close the distance between them with:  
-  - 我们注意到，在良好的对话中，人们会尝试通过以下方式拉近彼此的物理距离：
-  - Hand gestures  
-    - 手势  
-  - Leans  
-    - 身体前倾  
-  - Nods  
-    - 点头  
-  - Foot movement  
-    - 脚部移动  
-  - Drinks  
-    - 通过拿起或放下饮料  
+## 占位内容：与反直觉视角
+
+这是自动生成的占位段落，用于临时保持页面结构与排版节奏。当前条目已从原始正文切换为示例文本，后续可按需替换为正式内容。
+
+在这个版本中，我们以「」为主轴，用「反直觉视角」来约束论证路径，并通过持续抽象来观察结果是否稳定。
+
+### 临时结构
+
+- 关键主题：
+- 观察角度：反直觉视角
+- 工作动作：抽象
+- 扩展方向：认知框架
+
+> 提示：这是一段随机占位文本，仅用于演示页面效果与目录结构。
+
+下一步可围绕「认知框架」补充案例，并从「约束驱动」角度完成二次整理。

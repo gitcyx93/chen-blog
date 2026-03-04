@@ -10,6 +10,7 @@ export const collections = {
           date: z.string().optional(),
           tags: z.array(z.string()).optional(),
           cover: z.string().optional(),
+          article: z.boolean().optional(),
         }),
     }),
   }),

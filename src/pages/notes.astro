@@ -8,27 +8,23 @@ const toTs = (value?: string) => {
   return Number.isNaN(ts) ? 0 : ts;
 };
 
-const articles = (await getCollection('docs'))
-  .filter((entry) => entry.data.article)
+const notes = (await getCollection('docs'))
   .sort((a, b) => toTs(b.data.date) - toTs(a.data.date));
 ---
 
 <StarlightPage
-  frontmatter={{ title: '文章', description: '从笔记池中挑选出的长文。' }}
+  frontmatter={{ title: '笔记', description: '所有笔记都在这里；其中一部分会被选为文章。' }}
   hasSidebar={false}
   headings={[]}
 >
-  {articles.length === 0 ? (
-    <>
-      <p>目前还没有被标记为「文章」的条目。</p>
-      <p>在任意笔记 frontmatter 里加上 <code>article: true</code>，这里就会自动出现。</p>
-      <p><a href="/notes">去笔记池挑选 →</a></p>
-    </>
+  {notes.length === 0 ? (
+    <p>还没有内容，先上传一篇笔记吧。</p>
   ) : (
     <ul>
-      {articles.map((entry) => (
+      {notes.map((entry) => (
         <li>
           <a href={`/${entry.slug}/`}>{entry.data.title}</a>
+          {entry.data.article ? <span> · 文章已选中</span> : null}
           {entry.data.date ? <span> · {entry.data.date}</span> : null}
         </li>
       ))}

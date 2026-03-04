@@ -4,9 +4,15 @@ import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
 ---
 
 <StarlightPage
-  frontmatter={{ title: '关于', description: '这个站点是什么，以及为什么存在。', tableOfContents: false }}
+  frontmatter={{ title: 'Read Me', description: '页面已迁移。', tableOfContents: false }}
   hasSidebar={false}
   headings={[]}
 >
-  <p>内容建设中。</p>
+  <p>Read Me 页面已迁移到 <a href="/read-me/">/read-me/</a>。</p>
+  <p><a href="/read-me/">点击前往 Read Me</a></p>
+  <script is:inline>
+    if (location.pathname === '/about' || location.pathname === '/about/') {
+      location.replace('/read-me/');
+    }
+  </script>
 </StarlightPage>

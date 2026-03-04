@@ -3,20 +3,19 @@ title: "别再问「你做什么工作」——更好的开场问题"
 description: "用更有深度的问题代替「你是做什么的」，激发真实、有趣的对话。"
 ---
 
-- Stop asking "What do you do?"  
-  - 不要再问“你是做什么的？”  
-  - 试着换成：
-    1. Are you working on anything exciting recently?  
-       - 你最近在做什么令人兴奋的事情？  
-    2. What is your biggest goal right now?  
-       - 你目前最大的目标是什么？  
-    3. What book, movie, or TV character is most like you?  
-       - 哪本书、哪部电影或哪个电视剧角色最像你？  
-    4. How do you like to spend your free time?  
-       - 你喜欢怎么度过空闲时间？  
-    5. What’s something you’re passionate about?  
-       - 有没有什么事情让你特别有热情？  
-    6. Have you had any interesting conversations lately?  
-       - 你最近有没有听到什么有趣的对话？  
-    7. Non-verbal bridge: using body language to connect.  
-       - 非语言沟通的桥梁：用肢体语言建立连接。  
+## 占位内容：问题拆解与第一性原理
+
+这是自动生成的占位段落，用于临时保持页面结构与排版节奏。当前条目已从原始正文切换为示例文本，后续可按需替换为正式内容。
+
+在这个版本中，我们以「问题拆解」为主轴，用「第一性原理」来约束论证路径，并通过持续验证来观察结果是否稳定。
+
+### 临时结构
+
+- 关键主题：问题拆解
+- 观察角度：第一性原理
+- 工作动作：验证
+- 扩展方向：认知框架
+
+> 提示：这是一段随机占位文本，仅用于演示页面效果与目录结构。
+
+下一步可围绕「认知框架」补充案例，并从「约束驱动」角度完成二次整理。

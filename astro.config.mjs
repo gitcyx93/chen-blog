@@ -15,8 +15,8 @@ export default defineConfig({
   },
   integrations: [
     starlight({
-      title: '陈的笔记',
-      description: '关于心理学、投资、学习方法、健康与国际关系的观察与思考',
+      title: 'yuxiang@blog',
+      description: '关于心理学、投资、学习方法、健康与科技的观察与思考',
       defaultLocale: 'root',
       locales: {
         root: { label: '中文', lang: 'zh-CN' },
@@ -27,10 +27,10 @@ export default defineConfig({
         { label: '投资',    autogenerate: { directory: 'investing'  } },
         { label: '学习方法', autogenerate: { directory: 'learning'  } },
         { label: '健康',    autogenerate: { directory: 'health'     } },
-        { label: '国际关系', autogenerate: { directory: 'world'     } },
         { label: '其他',    autogenerate: { directory: 'misc'       } },
+        { label: '科技',    autogenerate: { directory: 'tech'       } },
       ],
-      tableOfContents: { minHeadingLevel: 2, maxHeadingLevel: 3 },
+      tableOfContents: true,
       pagination: true,
       lastUpdated: true,
       social: [],

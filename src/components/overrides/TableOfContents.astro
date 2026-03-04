@@ -1,0 +1,54 @@
+---
+/**
+ * 覆盖 Starlight 的 TableOfContents 组件
+ * 用文章元信息面板（日期、阅读时间、字数、标签）替换目录
+ */
+const route = Astro.locals.starlightRoute;
+const entry  = route?.entry;
+const data   = (entry?.data ?? {}) as Record<string, unknown>;
+
+const date: string   = typeof data.date === 'string' ? data.date : '';
+const tags: string[] = Array.isArray(data.tags) ? (data.tags as string[]) : [];
+
+// 字数统计（从原始 Markdown body）
+const body: string = (entry as unknown as { body?: string })?.body ?? '';
+
+// 中文字符数
+const chineseCount = (body.match(/[\u4e00-\u9fff\u3400-\u4dbf]/g) ?? []).length;
+// 英文单词数
+const englishCount = (body.match(/\b[a-zA-Z]{2,}\b/g) ?? []).length;
+const wordCount = chineseCount + englishCount;
+
+// 中文阅读速度约 400 字/分钟
+const readMin = Math.max(1, Math.ceil(wordCount / 400));
+---
+
+{entry && (
+  <div class="article-info-panel">
+    <div class="ai-header">article.info</div>
+    <div class="ai-body">
+      {date && (
+        <div class="ai-row">
+          <span class="ai-key">date:</span>
+          <span class="ai-val">{date}</span>
+        </div>
+      )}
+      <div class="ai-row">
+        <span class="ai-key">read:</span>
+        <span class="ai-val">~{readMin} min</span>
+      </div>
+      <div class="ai-row">
+        <span class="ai-key">words:</span>
+        <span class="ai-val">{wordCount.toLocaleString()} 字</span>
+      </div>
+      {tags.length > 0 && (
+        <div class="ai-row ai-row-tags">
+          <span class="ai-key">tags:</span>
+          <span class="ai-val ai-tags">
+            {tags.map((t: string) => <span class="ai-tag">{t}</span>)}
+          </span>
+        </div>
+      )}
+    </div>
+  </div>
+)}

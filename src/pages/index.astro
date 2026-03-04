@@ -1,83 +1,309 @@
 ---
 export const prerender = true;
 import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+import { getCollection } from 'astro:content';
+
+const docs = await getCollection('docs');
+const articleCount = docs.filter((d) => d.data.article).length;
+const noteCount = docs.length;
 
 const dirs = [
-  { name: '文章/',   desc: '长文，值得反复阅读',   meta: '12 篇', href: '/blog' },
-  { name: '笔记/',   desc: '日常碎片与即时观察',   meta: '',      href: '/psychology/human-vs-ai/' },
-  { name: '工具箱/', desc: '正在用的工具推荐',     meta: ' 9 项', href: '/tools' },
+  { name: '文章/',   desc: '长文，值得反复阅读',   meta: `${articleCount} 篇`, href: '/blog' },
+  { name: '笔记/',   desc: '日常碎片与即时观察',   meta: `${noteCount} 篇`,    href: '/notes' },
+  { name: '工具箱/', desc: '正在用的工具推荐',     meta: ' 9 项',               href: '/tools' },
 ];
 ---
 
 <StarlightPage
-  frontmatter={{ title: '陈的笔记', description: '这里不用登录，没有广告，没有算法，没有审查。你不是产品。', tableOfContents: false }}
+  frontmatter={{ title: 'yuxiang@blog', description: '这里不用登录，没有广告，没有算法，没有审查。你不是产品。', tableOfContents: false }}
   hasSidebar={false}
   headings={[]}
 >
-  <div class="home">
-    <div class="terminal-window">
+  <div class="home" id="home">
 
-      <div class="terminal-titlebar">
-        <span class="dot dot-red"></span>
-        <span class="dot dot-yellow"></span>
-        <span class="dot dot-green"></span>
-        <span class="terminal-title">~/ 陈的笔记</span>
+    <!-- Left: Terminal (hidden until robot animation ends) -->
+    <div class="terminal-section" id="terminal-section">
+      <div class="terminal-inner">
+        <div class="terminal-window">
+
+          <div class="terminal-titlebar">
+            <span class="dot dot-red"></span>
+            <span class="dot dot-yellow"></span>
+            <span class="dot dot-green"></span>
+            <span class="terminal-title">~/ yuxiang@blog</span>
+          </div>
+
+          <div class="terminal-body">
+            <div class="line">
+              <span class="path-user">yuxiang</span><span class="dim">@</span><span class="path-host">blog</span><span class="dim"> ~/</span>
+            </div>
+            <div class="line cmd-line">
+              <span class="prompt">❯&nbsp;</span><span id="typed-text"></span><span class="cursor" id="cursor-1">█</span>
+            </div>
+            <div class="line output-block" id="output-sub">
+              <span class="dim"># 这里不用登录，没有广告，没有算法，没有审查。</span><br/>
+              <span class="manifesto">你不是产品。</span>&nbsp;<a href="/read-me/" class="link">了解本网站 →</a>
+            </div>
+            <div class="line spacer" id="spacer-ls"></div>
+            <div class="line cmd-line" id="ls-prompt">
+              <span class="prompt">❯&nbsp;</span><span class="typed-ls"></span><span class="cursor" id="cursor-ls">█</span>
+            </div>
+            <div class="ls-output" id="ls-output">
+              {dirs.map(d => (
+                <a href={d.href} class="ls-entry" data-name={d.name}>
+                  <span class="ls-name"><span class="ls-arrow" aria-hidden="true"></span>{d.name}</span>
+                  <span class="ls-desc">{d.desc}</span>
+                  <span class="ls-meta">{d.meta}</span>
+                </a>
+              ))}
+            </div>
+            <div class="line spacer" id="spacer-end"></div>
+            <div class="line cmd-line" id="final-cursor-line">
+              <span class="prompt">❯&nbsp;</span><span class="cursor">█</span>
+            </div>
+          </div>
+
+        </div>
       </div>
+    </div>
 
-      <div class="terminal-body">
+    <!-- Right: Robot -->
+    <div class="robot-section" id="robot-section">
+      <div class="robot-card">
 
-        <div class="line">
-          <span class="path-user">yuxiang</span><span class="dim">@</span><span class="path-host">blog</span><span class="dim"> ~/</span>
+        <div class="robot-image-frame">
+          <img
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBrZCReaTdHCXmh_-Rjjg02oR1WcnhORWf3FkNn320ZVwd9RTd2rvb0ysZ18cMUEjbMxpd-gLue290csXnSESor0ojwqE87jBVACQegBkvQGHXxrp8KMA0Jy3Uk3QDwayh2ZFID5_VeN7Ni4khZR7Yl9qnw-kMyGXPnDigT8baxJQ-nTCKpMsdfyuptP5TsrDqAeRCKcuorIV_bMBNtNxw_j7S826RgQ_qIPr5ubRZKt8eovqpN2UhU5RNRBNFKxIbc5ykR_RpSuZ8"
+            alt="robot mascot"
+            class="robot-img"
+          />
         </div>
-        <div class="line cmd-line">
-          <span class="prompt">❯&nbsp;</span><span id="typed-text"></span><span class="cursor" id="cursor-1">█</span>
-        </div>
-
-        <div class="line output-block" id="output-sub">
-          <span class="dim"># 这里不用登录，没有广告，没有算法，没有审查。</span><br/>
-          <span class="manifesto">你不是产品。</span>&nbsp;<a href="/about" class="link">了解这个站点 →</a>
-        </div>
-
-        <div class="line spacer" id="spacer-ls"></div>
-
-        <div class="line cmd-line" id="ls-prompt">
-          <span class="prompt">❯&nbsp;</span><span class="typed-ls"></span><span class="cursor" id="cursor-ls">█</span>
-        </div>
-
-        <div class="ls-output" id="ls-output">
-          {dirs.map(d => (
-            <a href={d.href} class="ls-entry" data-name={d.name}>
-              <span class="ls-name">{d.name}</span>
-              <span class="ls-desc">{d.desc}</span>
-              <span class="ls-meta">{d.meta}</span>
-            </a>
-          ))}
-        </div>
-
-        <div class="line spacer" id="spacer-end"></div>
-        <div class="line cmd-line" id="final-cursor-line">
-          <span class="prompt">❯&nbsp;</span><span class="cursor">█</span>
+        <div class="robot-status-pill">
+          <span class="status-dot"></span>
+          <span class="status-text">[ SYSTEM V3.0 ONLINE ]</span>
+          <button id="mute-btn" class="mute-btn" title="关闭音效" aria-label="切换音效">♪</button>
         </div>
 
       </div>
     </div>
+
   </div>
 </StarlightPage>
 
 <script>
-  const typedEl   = document.getElementById('typed-text') as HTMLElement;
-  const cursor1   = document.getElementById('cursor-1') as HTMLElement;
-  const outputSub = document.getElementById('output-sub') as HTMLElement;
-  const spacerLs  = document.getElementById('spacer-ls') as HTMLElement;
-  const lsCmd     = document.getElementById('ls-cmd') as HTMLElement;
-  const lsPrompt  = document.getElementById('ls-prompt') as HTMLElement;
-  const lsTyped   = lsPrompt.querySelector('.typed-ls') as HTMLElement;
-  const cursorLs  = document.getElementById('cursor-ls') as HTMLElement;
-  const lsOutput  = document.getElementById('ls-output') as HTMLElement;
-  const spacerEnd = document.getElementById('spacer-end') as HTMLElement;
+  // ─────────────────────────────────────────────────
+  //  Audio Engine（开源音效文件）
+  // ─────────────────────────────────────────────────
+  let muted = false;
+
+  const sounds: Record<string, HTMLAudioElement> = {
+    boot:     new Audio('/sounds/boot.ogg'),
+    keyClick: new Audio('/sounds/candidates/typewriter7.ogg'),
+    buzz:     new Audio('/sounds/buzz.ogg'),
+    robotClick: new Audio('/sounds/candidates/interface-pack/Audio/select_001.ogg'),
+    easterStart: new Audio('/sounds/candidates/interface-pack/Audio/glitch_002.ogg'),
+    easterEnd:   new Audio('/sounds/candidates/interface-pack/Audio/select_004.ogg'),
+    chirp:    new Audio('/sounds/chirp.ogg'),
+    hover:    new Audio('/sounds/candidates/qubodup-hover2.ogg'),
+  };
+  const robotHum = new Audio('/sounds/candidates/robot-buzz-alt.ogg');
+  const ROBOT_HUM_TARGET_VOLUME = 0.24;
+  let humFadeTimer: number | null = null;
+  robotHum.loop = true;
+  robotHum.volume = 0;
+  robotHum.playbackRate = 1.06;
+
+  sounds.keyClick.volume = 0.58;
+  sounds.hover.volume    = 0.2;
+  sounds.chirp.volume    = 0.45;
+  sounds.buzz.volume     = 0.5;
+  sounds.robotClick.volume = 0.48;
+  sounds.easterStart.volume = 0.38;
+  sounds.easterEnd.volume   = 0.42;
+  sounds.boot.volume     = 0.5;
+
+  function play(name: string) {
+    if (muted) return;
+    const s = sounds[name];
+    if (!s) return;
+    s.currentTime = 0;
+    s.play().catch(() => {});
+  }
+
+  function playTypeClick()    { play('keyClick'); }
+  function playRobotClick()   { play('robotClick'); }
+  function playEntryChirp()   { play('chirp');    }
+  function playBootChime()    { play('boot');     }
+  function playEasterStart()  { play('easterStart'); }
+  function playEasterEnd()    { play('easterEnd'); }
+
+  function clearHumFade() {
+    if (humFadeTimer !== null) {
+      clearInterval(humFadeTimer);
+      humFadeTimer = null;
+    }
+  }
+
+  function fadeRobotHum(toVolume: number, duration = 160) {
+    clearHumFade();
+    const from = robotHum.volume;
+    const diff = toVolume - from;
+    const steps = Math.max(1, Math.round(duration / 16));
+    let step = 0;
+    humFadeTimer = window.setInterval(() => {
+      step += 1;
+      const t = Math.min(1, step / steps);
+      robotHum.volume = Math.max(0, Math.min(1, from + diff * t));
+      if (t >= 1) {
+        clearHumFade();
+        if (toVolume <= 0) {
+          robotHum.pause();
+          robotHum.currentTime = 0;
+          robotHum.volume = 0;
+        }
+      }
+    }, 16);
+  }
+
+  function startRobotHum() {
+    if (muted) return;
+    if (robotHum.paused) {
+      robotHum.currentTime = 0;
+      robotHum.play().catch(() => {});
+    }
+    fadeRobotHum(ROBOT_HUM_TARGET_VOLUME, 120);
+  }
+
+  function stopRobotHum() {
+    if (robotHum.paused && robotHum.volume === 0) return;
+    fadeRobotHum(0, 170);
+  }
+
+  // ─────────────────────────────────────────────────
+  //  Mute button
+  // ─────────────────────────────────────────────────
+  const muteBtn = document.getElementById('mute-btn') as HTMLButtonElement | null;
+  muteBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    muted = !muted;
+    if (muted) stopRobotHum();
+    if (muteBtn) {
+      muteBtn.textContent = muted ? '✕' : '♪';
+      muteBtn.classList.toggle('muted', muted);
+      muteBtn.title = muted ? '开启音效' : '关闭音效';
+    }
+  });
+
+  // ─────────────────────────────────────────────────
+  //  Robot interactions
+  // ─────────────────────────────────────────────────
+  const robotFrame = document.querySelector<HTMLElement>('.robot-image-frame');
+  const robotCard  = document.querySelector<HTMLElement>('.robot-card');
+  const robotStatusText = document.querySelector<HTMLElement>('.status-text');
+  const ROBOT_DEFAULT_STATUS = (robotStatusText?.textContent ?? '[ SYSTEM V3.0 ONLINE ]').trim();
+  const ROBOT_SINGLE_CLICK_DELAY_MS = 240;
+  const ROBOT_EASTER_COOLDOWN_MS = 3000;
+  let robotClickTimer: number | null = null;
+  let robotStatusTimer: number | null = null;
+  let lastRobotEasterAt = -Infinity;
+
+  function setRobotStatus(text: string, durationMs = 2000) {
+    if (!robotStatusText) return;
+    robotStatusText.textContent = text;
+    if (robotStatusTimer !== null) clearTimeout(robotStatusTimer);
+    robotStatusTimer = window.setTimeout(() => {
+      robotStatusText.textContent = ROBOT_DEFAULT_STATUS;
+      robotStatusTimer = null;
+    }, durationMs);
+  }
+
+  function triggerRobotBounce() {
+    robotCard?.classList.remove('bouncing');
+    if (robotCard) void robotCard.offsetWidth; // force reflow to restart animation
+    robotCard?.classList.add('bouncing');
+    setTimeout(() => robotCard?.classList.remove('bouncing'), 500);
+  }
+
+  function triggerRobotGlitch(durationMs = 520) {
+    robotCard?.classList.remove('glitching');
+    if (robotCard) void robotCard.offsetWidth; // force reflow to restart animation
+    robotCard?.classList.add('glitching');
+    setTimeout(() => robotCard?.classList.remove('glitching'), durationMs);
+  }
+
+  function runRobotSingleClick() {
+    playRobotClick();
+    triggerRobotBounce();
+  }
+
+  function runRobotEasterEgg() {
+    playEasterStart();
+    setTimeout(() => playEasterEnd(), 120);
+    triggerRobotBounce();
+    triggerRobotGlitch(560);
+    setRobotStatus('[ EASTER EGG: ACCESS GRANTED ]', 2200);
+  }
+
+  robotFrame?.addEventListener('mouseenter', () => { startRobotHum(); });
+  robotFrame?.addEventListener('mouseleave', () => { stopRobotHum(); });
+
+  robotFrame?.addEventListener('click', () => {
+    if (robotClickTimer !== null) {
+      clearTimeout(robotClickTimer);
+      robotClickTimer = null;
+      const now = performance.now();
+      if (now - lastRobotEasterAt >= ROBOT_EASTER_COOLDOWN_MS) {
+        lastRobotEasterAt = now;
+        runRobotEasterEgg();
+      } else {
+        runRobotSingleClick();
+      }
+      return;
+    }
+
+    robotClickTimer = window.setTimeout(() => {
+      robotClickTimer = null;
+      runRobotSingleClick();
+    }, ROBOT_SINGLE_CLICK_DELAY_MS);
+  });
+
+  // ls entry hover sounds
+  const LS_HOVER_COOLDOWN_MS = 160;
+  let lastLsHoverAt = 0;
+  document.querySelectorAll<HTMLElement>('.ls-entry').forEach(entry => {
+    entry.addEventListener('mouseenter', () => {
+      const now = performance.now();
+      if (now - lastLsHoverAt < LS_HOVER_COOLDOWN_MS) return;
+      lastLsHoverAt = now;
+      play('hover');
+    });
+  });
+
+  // Random glitch every 5–14 seconds
+  function scheduleGlitch() {
+    setTimeout(() => {
+      robotCard?.classList.add('glitching');
+      setTimeout(() => { robotCard?.classList.remove('glitching'); scheduleGlitch(); }, 450);
+    }, 5000 + Math.random() * 9000);
+  }
+  scheduleGlitch();
+
+  // ─────────────────────────────────────────────────
+  //  Terminal animation (with sounds)
+  // ─────────────────────────────────────────────────
+  const typedEl         = document.getElementById('typed-text') as HTMLElement;
+  const cursor1         = document.getElementById('cursor-1') as HTMLElement;
+  const outputSub       = document.getElementById('output-sub') as HTMLElement;
+  const spacerLs        = document.getElementById('spacer-ls') as HTMLElement;
+  const lsPrompt        = document.getElementById('ls-prompt') as HTMLElement;
+  const lsTyped         = lsPrompt.querySelector('.typed-ls') as HTMLElement;
+  const cursorLs        = document.getElementById('cursor-ls') as HTMLElement;
+  const lsOutput        = document.getElementById('ls-output') as HTMLElement;
+  const spacerEnd       = document.getElementById('spacer-end') as HTMLElement;
   const finalCursorLine = document.getElementById('final-cursor-line') as HTMLElement;
 
   const sleep = (ms: number) => new Promise<void>(r => setTimeout(r, ms));
+  const TYPE_CHAR_INTERVAL_MS = 280;
 
   const segments = [
     { text: '你好，人类，欢迎你', hl: false },
@@ -85,18 +311,19 @@ const dirs = [
     { text: '走进来',            hl: false },
   ];
 
-  async function typeText(el: HTMLElement, text: string, speed = 80) {
+  async function typeText(el: HTMLElement, text: string, speed = TYPE_CHAR_INTERVAL_MS) {
     for (const ch of [...text]) {
       const s = document.createElement('span');
       s.textContent = ch;
       el.appendChild(s);
-      await sleep(speed + Math.random() * 40);
+      playTypeClick();
+      await sleep(speed);
     }
   }
 
-  async function run() {
+  async function runTerminal() {
     await sleep(300);
-
+    playBootChime();
     for (const seg of segments) {
       if (seg.hl) await sleep(400);
       for (const ch of [...seg.text]) {
@@ -104,59 +331,242 @@ const dirs = [
         if (seg.hl) s.className = 'hl';
         s.textContent = ch;
         typedEl.appendChild(s);
-        await sleep(seg.hl ? 150 : 65 + Math.random() * 50);
+        playTypeClick();
+        await sleep(TYPE_CHAR_INTERVAL_MS);
       }
       if (seg.hl) await sleep(360);
     }
-
     cursor1.style.display = 'none';
     await sleep(300);
     outputSub.classList.add('show');
-
     await sleep(600);
     spacerLs.classList.add('show');
     await sleep(200);
     lsPrompt.classList.add('show');
-
     await sleep(300);
-    await typeText(lsTyped, 'ls', 120);
+    await typeText(lsTyped, 'ls');
     await sleep(200);
-
     cursorLs.style.display = 'none';
     lsOutput.classList.add('show');
     const entries = lsOutput.querySelectorAll<HTMLElement>('.ls-entry');
     entries.forEach((entry, i) => {
-      setTimeout(() => entry.classList.add('show'), i * 100);
+      setTimeout(() => { entry.classList.add('show'); playEntryChirp(); }, i * 100);
     });
-
     await sleep(entries.length * 100 + 200);
     spacerEnd.classList.add('show');
     await sleep(200);
     finalCursorLine.classList.add('show');
   }
 
-  run();
+  // ─────────────────────────────────────────────────
+  //  Boot
+  // ─────────────────────────────────────────────────
+  const homeEl      = document.getElementById('home')!;
+  const termSection = document.getElementById('terminal-section')!;
+  homeEl.classList.add('layout-ready');
+  termSection.classList.add('terminal-show');
+  runTerminal();
+
 </script>
 
 <style>
-  :global(header.header) { display: none; }
-  :global(.main-frame) { padding-top: 0 !important; }
-  :global(#_top) { display: none; }
-  :global(.sl-markdown-content > hr:first-of-type) { display: none; }
+  /* ─── Hide Starlight chrome on homepage ─── */
+  :global(header.header)                            { display: none; }
+  :global(.main-frame)                              { padding-top: 0 !important; }
+  :global(#_top)                                    { display: none; }
+  :global(.sl-markdown-content > hr:first-of-type)  { display: none; }
+  /* Hide PageTitle.astro override elements (cat prompt, frontmatter, h1) */
+  :global(.cat-prompt)                              { display: none; }
+  :global(.frontmatter-card)                        { display: none; }
+  :global([data-page-title])                        { display: none; }
+  /* Hide the h1 that PageTitle renders */
+  :global(.sl-markdown-content > h1:first-child)    { display: none; }
+  /* Hide the neovim status bar injected by Header.astro (not needed on homepage) */
+  :global(.neovim-statusbar)                        { display: none !important; }
+  /* Break out of Starlight's 44rem content column on homepage */
+  :global(.sl-markdown-content:has(.home))          { max-width: none; }
 
+  /* ═══════════════════════════════════════════
+     HOME LAYOUT — two-column: terminal + robot
+  ═══════════════════════════════════════════ */
   .home {
-    padding: 3rem 0 4rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 4rem);
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 3rem 14rem;
+    gap: 3rem;
     font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
   }
 
+  /* Terminal: fades in on page load */
+  .terminal-section {
+    flex: 1;
+    min-width: 280px;
+    opacity: 0;
+    transition: opacity 0.6s ease-out 0.15s;
+  }
+  .terminal-section.terminal-show {
+    opacity: 1;
+  }
+  .terminal-inner {
+    width: min(760px, 100%);
+  }
+
+  /* Robot section: always flex-shrink: 0, stays right of terminal */
+  .robot-section {
+    flex-shrink: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 5rem;
+  }
+
+  /* ═══════════════════════════════════════════
+     ROBOT CARD (Stitch image + status pill)
+  ═══════════════════════════════════════════ */
+  .robot-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    animation: robot-float 4s ease-in-out infinite;
+    cursor: pointer;
+  }
+  .robot-image-frame {
+    position: relative;
+    width: 320px;
+    height: 320px;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 2px solid color-mix(in srgb, var(--accent) 25%, transparent);
+    background: #080f12;
+    box-shadow:
+      0 20px 60px rgba(0, 0, 0, 0.45),
+      0 0 0 1px color-mix(in srgb, var(--accent) 12%, transparent);
+    transition: box-shadow 0.3s ease, border-color 0.3s ease;
+  }
+  .robot-image-frame:hover {
+    border-color: color-mix(in srgb, var(--accent) 50%, transparent);
+    box-shadow:
+      0 20px 60px rgba(0, 0, 0, 0.45),
+      0 0 0 1px color-mix(in srgb, var(--accent) 35%, transparent),
+      0 0 28px color-mix(in srgb, var(--accent) 20%, transparent);
+  }
+  /* Scan line sweep */
+  .robot-image-frame::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      transparent 25%,
+      color-mix(in srgb, var(--accent) 7%, transparent) 50%,
+      transparent 75%
+    );
+    animation: scan-sweep 3.5s linear infinite;
+    pointer-events: none;
+  }
+  @keyframes scan-sweep {
+    from { transform: translateY(-100%); }
+    to   { transform: translateY(200%); }
+  }
+  .robot-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    mix-blend-mode: luminosity;
+    opacity: 0.82;
+    transition: mix-blend-mode 0.3s, opacity 0.3s;
+  }
+  .robot-image-frame:hover .robot-img {
+    mix-blend-mode: normal;
+    opacity: 1;
+  }
+  .robot-status-pill {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
+    padding: 8px 20px;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent);
+  }
+  .status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+    animation: status-pulse 2s ease-in-out infinite;
+  }
+  @keyframes status-pulse {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.35; }
+  }
+  .status-text {
+    color: var(--accent);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+  }
+  .mute-btn {
+    background: none;
+    border: none;
+    color: var(--accent);
+    font-size: 0.8rem;
+    cursor: pointer;
+    padding: 0 0 0 2px;
+    opacity: 0.65;
+    transition: opacity 0.15s;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    line-height: 1;
+  }
+  .mute-btn:hover { opacity: 1; }
+  .mute-btn.muted { opacity: 0.3; text-decoration: line-through; }
+
+  /* ── Robot animations ── */
+  @keyframes robot-float {
+    0%, 100% { transform: translateY(0px); }
+    50%       { transform: translateY(-9px); }
+  }
+  @keyframes robot-bounce {
+    0%   { transform: translateY(0) scale(1, 1); }
+    20%  { transform: translateY(-12px) scale(0.93, 1.07); }
+    50%  { transform: translateY(3px) scale(1.06, 0.95); }
+    75%  { transform: translateY(-4px) scale(0.98, 1.02); }
+    100% { transform: translateY(0) scale(1, 1); }
+  }
+  @keyframes robot-glitch {
+    0%   { filter: none;                                        transform: translateX(0); }
+    15%  { filter: hue-rotate(30deg) brightness(1.5);          transform: translateX(4px); }
+    30%  { filter: hue-rotate(-20deg) saturate(2.5);           transform: translateX(-4px); }
+    50%  { filter: brightness(1.7) contrast(1.3);              transform: translateX(3px); }
+    70%  { filter: hue-rotate(15deg) saturate(1.5);            transform: translateX(-2px); }
+    85%  { filter: none;                                        transform: translateX(1px); }
+    100% { filter: none;                                        transform: translateX(0); }
+  }
+  .robot-card.bouncing {
+    animation: robot-bounce 0.48s ease-out;
+  }
+  .robot-card.glitching .robot-img {
+    animation: robot-glitch 0.42s steps(1);
+  }
+
+  /* ═══════════════════════════════════════════
+     TERMINAL WINDOW STYLES (unchanged from before)
+  ═══════════════════════════════════════════ */
   .terminal-window {
-    width: min(780px, 100%);
+    width: min(760px, 100%);
     background: var(--bg-base);
     border-radius: 10px;
     box-shadow: 0 0 0 1px var(--border), 0 20px 60px rgba(0,0,0,0.5);
     overflow: hidden;
   }
-
   .terminal-titlebar {
     background: var(--bg-elevated);
     padding: 11px 16px;
@@ -176,33 +586,30 @@ const dirs = [
     color: var(--text-muted);
     user-select: none;
   }
-
   .terminal-body {
     padding: 18px 24px 28px;
     font-size: clamp(0.875rem, 2.2vw, 1rem);
     line-height: 1.75;
     color: var(--text-body);
   }
-
   .line {
-    display: none;
+    visibility: hidden;
     white-space: pre-wrap;
   }
   .line:nth-child(1),
-  .line:nth-child(2) { display: block; }
-  .line.show { display: block; }
+  .line:nth-child(2) { visibility: visible; }
+  .line.show { visibility: visible; }
 
-  .path-user  { color: var(--color-green); }
-  .path-host  { color: var(--color-blue); }
-  .dim        { color: var(--text-muted); }
-  .prompt     { color: var(--color-green); user-select: none; }
+  .path-user { color: var(--color-green); }
+  .path-host { color: var(--color-blue); }
+  .dim       { color: var(--text-muted); }
+  .prompt    { color: var(--color-green); user-select: none; }
 
   :global(.hl) {
     color: var(--color-yellow);
     font-weight: 700;
     letter-spacing: 0.04em;
   }
-
   .cursor {
     color: var(--color-purple);
     animation: blink 0.85s step-end infinite;
@@ -222,7 +629,6 @@ const dirs = [
     color: var(--text-primary);
     font-weight: 600;
   }
-
   .link {
     color: var(--accent);
     text-decoration: none;
@@ -233,34 +639,74 @@ const dirs = [
 
   .spacer { margin-top: 8px; }
 
-  .ls-output {
-    display: none;
-    margin-top: 4px;
-    margin-bottom: 4px;
+  .ls-output { visibility: hidden; margin-top: 4px; margin-bottom: 4px; }
+  .ls-output.show { visibility: visible; }
+
+  .ls-arrow {
+    display: inline-block;
+    width: 0.98rem;
+    height: 0.74rem;
+    margin-right: 0.45rem;
+    vertical-align: -0.08rem;
+    opacity: 0.95;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 16'%3E%3Cpath d='M1.5 5.5h6.7l2.2-2.5h12v10.5a2 2 0 0 1-2 2H3.5a2 2 0 0 1-2-2z' fill='none' stroke='%2381a1c1' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   }
-  .ls-output.show { display: block; }
 
   .ls-entry {
     display: grid !important;
     grid-template-columns: 10ch 1fr 6ch;
     gap: 0 1.5ch;
-    padding: 2px 0;
+    padding: 5px 10px;
     text-decoration: none;
     color: inherit;
     opacity: 0;
     transform: translateX(-6px);
-    transition: opacity 0.3s ease-out, transform 0.3s ease-out, background 0.15s;
-    border-radius: 3px;
+    transition: opacity 0.3s ease-out, transform 0.3s ease-out, background 0.15s, border-color 0.15s;
+    border-radius: 5px;
+    border: 1px solid color-mix(in srgb, var(--accent) 16%, transparent);
+    margin-bottom: 3px;
   }
   .ls-entry.show { opacity: 1; transform: translateX(0); }
-  .ls-entry:hover { background: color-mix(in srgb, var(--bg-elevated) 40%, transparent); }
+  .ls-entry:hover {
+    background: color-mix(in srgb, var(--bg-elevated) 55%, transparent);
+    border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+  }
 
-  .ls-name { color: var(--color-blue); font-weight: 600; }
+  .ls-name {
+    color: var(--color-blue);
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+  }
   .ls-desc { color: var(--text-muted); }
-  .ls-meta { color: var(--bg-panel); text-align: right; }
+  .ls-meta { color: var(--text-muted); text-align: right; }
 
+  /* ═══════════════════════════════════════════
+     MOBILE
+  ═══════════════════════════════════════════ */
+  @media (max-width: 1100px) {
+    .home { gap: 2rem; }
+    .robot-image-frame { width: 260px; height: 260px; }
+  }
+  @media (max-width: 900px) {
+    .home {
+      flex-direction: column;
+      min-height: calc(100vh - 4rem);
+      gap: 0;
+      padding: 2rem 1rem 3rem;
+      justify-content: center;
+    }
+    .robot-section { display: none; margin-top: 0; }
+    .terminal-section {
+      min-width: 0;
+      opacity: 1 !important;
+      transition: none !important;
+    }
+  }
   @media (max-width: 480px) {
     .ls-entry { grid-template-columns: 9ch 1fr; }
-    .ls-meta { display: none; }
+    .ls-meta  { display: none; }
   }
 </style>
