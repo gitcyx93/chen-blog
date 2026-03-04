@@ -253,10 +253,10 @@ header.header::before {
   opacity: 0.9;
   background-repeat: no-repeat;
   background-size: contain;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 16'%3E%3Cpath d='M1.5 5.5h6.7l2.2-2.5h12v10.5a2 2 0 0 1-2 2H3.5a2 2 0 0 1-2-2z' fill='none' stroke='%239eafcc' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 16'%3E%3Cpath d='M0.8 4.2L0.8 2.5A1.8 1.8 0 0 1 2.6 0.7H7.8L9.6 4.2H19Q20 4.2 20 5.2V14.5Q20 16 18.5 16H1.5Q0 16 0 14.5V5.2Q0 4.2 0.8 4.2Z' fill='%2388c0d0' fill-opacity='0.08' stroke='%2388c0d0' stroke-width='1.15' stroke-linejoin='round'/%3E%3C/svg%3E");
 }
 [class*="sidebar"] [aria-current='page']::before {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 16'%3E%3Cpath d='M1.5 5.5h6.7l2.2-2.5h12v10.5a2 2 0 0 1-2 2H3.5a2 2 0 0 1-2-2z' fill='none' stroke='%23a3be8c' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 16'%3E%3Cpath d='M0.8 4.2L0.8 2.5A1.8 1.8 0 0 1 2.6 0.7H7.8L9.6 4.2H19Q20 4.2 20 5.2V14.5Q20 16 18.5 16H1.5Q0 16 0 14.5V5.2Q0 4.2 0.8 4.2Z' fill='%23a3be8c' fill-opacity='0.10' stroke='%23a3be8c' stroke-width='1.15' stroke-linejoin='round'/%3E%3C/svg%3E");
 }
 
 /* 折叠箭头：隐藏默认 SVG caret，改用 ▸ / ▾ */
@@ -290,10 +290,10 @@ header.header::before {
   opacity: 0.9;
   background-repeat: no-repeat;
   background-size: contain;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 16'%3E%3Cpath d='M1.5 5.5h6.7l2.2-2.5h12v10.5a2 2 0 0 1-2 2H3.5a2 2 0 0 1-2-2z' fill='none' stroke='%239eafcc' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 16'%3E%3Cpath d='M0.8 4.2L0.8 2.5A1.8 1.8 0 0 1 2.6 0.7H7.8L9.6 4.2H19Q20 4.2 20 5.2V14.5Q20 16 18.5 16H1.5Q0 16 0 14.5V5.2Q0 4.2 0.8 4.2Z' fill='%2388c0d0' fill-opacity='0.08' stroke='%2388c0d0' stroke-width='1.15' stroke-linejoin='round'/%3E%3C/svg%3E");
 }
 [class*="sidebar"] details[open] > summary::after {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 16'%3E%3Cpath d='M1.5 5.5h6.7l2.2-2.5h12v10.5a2 2 0 0 1-2 2H3.5a2 2 0 0 1-2-2z' fill='none' stroke='%23a3be8c' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 16'%3E%3Cpath d='M0.8 4.2L0.8 2.5A1.8 1.8 0 0 1 2.6 0.7H7.8L9.6 4.2H19Q20 4.2 20 5.2V14.5Q20 16 18.5 16H1.5Q0 16 0 14.5V5.2Q0 4.2 0.8 4.2Z' fill='%23a3be8c' fill-opacity='0.10' stroke='%23a3be8c' stroke-width='1.15' stroke-linejoin='round'/%3E%3C/svg%3E");
 }
 
 /* ===================================================
