@@ -6,12 +6,12 @@ const TIME_START  = -650;
 const TIME_END    = 2030;
 const TIME_SPAN   = TIME_END - TIME_START;
 
-const SVG_W       = 1600;
+const SVG_W       = 2400;
 const LANE_H      = 44;
-const LANE_GAP    = 4;
+const LANE_GAP    = 18;   // gap between lanes — school labels live here
 const LANE_STEP   = LANE_H + LANE_GAP;
-const PADDING_TOP = 48;   // space for time axis
-const PADDING_BOT = 24;
+const PADDING_TOP = 60;   // space for time axis + first label
+const PADDING_BOT = 28;
 const PADDING_L   = 10;
 const PADDING_R   = 10;
 
@@ -204,53 +204,87 @@ export default function PhilosophyTree() {
                 strokeOpacity={isHovered ? 0.7 : 0.35}
               />
 
-              {/* School label – left-anchored inside band */}
+              {/* School label – floats above the band in the gap */}
               <text
-                x={x + 10} y={y + LANE_H / 2 + 1}
-                dominantBaseline="middle"
-                fontSize="10"
+                x={x + 8} y={y - 5}
+                textAnchor="start"
+                fontSize="9"
                 fontWeight="600"
                 fill={school.strokeColor}
-                opacity={isHovered ? 1 : 0.75}
+                opacity={isHovered ? 1 : 0.65}
                 style={{ pointerEvents: 'none', userSelect: 'none' }}
               >
                 {school.nameZh}
               </text>
 
-              {/* Philosopher dots */}
-              {school.philosophers.map(p => {
-                const px = tx(p.birthYear);
+              {/* Philosopher dots – sort by birthYear, stagger above/below, enforce min spacing */}
+              {(() => {
                 const py = y + LANE_H / 2;
-                const inBand = px >= x && px <= x + w;
-                const dotX = inBand ? px : Math.max(x + 60, Math.min(px, x + w - 8));
 
-                return (
-                  <g key={p.id}>
-                    {/* Dot */}
-                    <circle
-                      cx={dotX} cy={py} r={4}
-                      fill={school.strokeColor}
-                      opacity={tooltip?.philosopher.id === p.id ? 1 : 0.8}
-                      stroke="rgba(0,0,0,0.4)"
-                      strokeWidth="0.8"
-                      style={{ cursor: 'pointer' }}
-                      onMouseEnter={e => handlePhilosopherEnter(e, p, school)}
-                      onMouseLeave={() => setTooltip(null)}
-                    />
-                    {/* Name label */}
-                    <text
-                      x={dotX} y={py - 8}
-                      textAnchor="middle"
-                      fontSize="9"
-                      fill={school.strokeColor}
-                      opacity={isHovered || tooltip?.philosopher.id === p.id ? 0.9 : 0.55}
-                      style={{ pointerEvents: 'none', userSelect: 'none' }}
-                    >
-                      {p.nameZh}
-                    </text>
-                  </g>
-                );
-              })}
+                // 1. Sort by birthYear so neighbouring philosophers alternate rows
+                const sorted = [...school.philosophers]
+                  .sort((a, b) => a.birthYear - b.birthYear);
+
+                // 2. Dot X positions
+                const dotXs = sorted.map(p => {
+                  const px = tx(p.birthYear);
+                  const inBand = px >= x && px <= x + w;
+                  return inBand ? px : Math.max(x + 60, Math.min(px, x + w - 8));
+                });
+
+                // 3. Assign row: even sorted-index → above, odd → below
+                const isAboves = sorted.map((_, i) => i % 2 === 0);
+
+                // 4. Enforce minimum horizontal gap (30 px) between labels in same row
+                const MIN_GAP = 30;
+                const labelXs = [...dotXs];
+                const aboveIs = sorted.map((_, i) => i).filter(i =>  isAboves[i]);
+                const belowIs = sorted.map((_, i) => i).filter(i => !isAboves[i]);
+                for (let k = 1; k < aboveIs.length; k++) {
+                  const [pi, ci] = [aboveIs[k - 1], aboveIs[k]];
+                  if (labelXs[ci] - labelXs[pi] < MIN_GAP) labelXs[ci] = labelXs[pi] + MIN_GAP;
+                }
+                for (let k = 1; k < belowIs.length; k++) {
+                  const [pi, ci] = [belowIs[k - 1], belowIs[k]];
+                  if (labelXs[ci] - labelXs[pi] < MIN_GAP) labelXs[ci] = labelXs[pi] + MIN_GAP;
+                }
+
+                // 5. Smaller font for dense schools
+                const fSize = school.philosophers.length > 4 ? 8 : 9;
+
+                return sorted.map((p, si) => {
+                  const dotX  = dotXs[si];
+                  const labelX = labelXs[si];
+                  const isAbove = isAboves[si];
+                  const labelY = isAbove ? py - 10 : py + 10;
+
+                  return (
+                    <g key={p.id}>
+                      <circle
+                        cx={dotX} cy={py} r={4}
+                        fill={school.strokeColor}
+                        opacity={tooltip?.philosopher.id === p.id ? 1 : 0.8}
+                        stroke="rgba(0,0,0,0.4)"
+                        strokeWidth="0.8"
+                        style={{ cursor: 'pointer' }}
+                        onMouseEnter={e => handlePhilosopherEnter(e, p, school)}
+                        onMouseLeave={() => setTooltip(null)}
+                      />
+                      <text
+                        x={labelX} y={labelY}
+                        textAnchor="middle"
+                        dominantBaseline={isAbove ? 'auto' : 'hanging'}
+                        fontSize={fSize}
+                        fill={school.strokeColor}
+                        opacity={isHovered || tooltip?.philosopher.id === p.id ? 0.9 : 0.5}
+                        style={{ pointerEvents: 'none', userSelect: 'none' }}
+                      >
+                        {p.nameZh}
+                      </text>
+                    </g>
+                  );
+                });
+              })()}
             </g>
           );
         })}
