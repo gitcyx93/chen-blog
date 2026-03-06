@@ -2,6 +2,7 @@
 export const prerender = true;
 import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
 import { getCollection } from 'astro:content';
+import { ROBOT_MASCOT_SRC } from '../lib/robot-mascot';
 
 const docs = await getCollection('docs');
 const articleCount = docs.filter((d) => d.data.article).length;
@@ -73,14 +74,13 @@ const dirs = [
 
         <div class="robot-image-frame">
           <img
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBrZCReaTdHCXmh_-Rjjg02oR1WcnhORWf3FkNn320ZVwd9RTd2rvb0ysZ18cMUEjbMxpd-gLue290csXnSESor0ojwqE87jBVACQegBkvQGHXxrp8KMA0Jy3Uk3QDwayh2ZFID5_VeN7Ni4khZR7Yl9qnw-kMyGXPnDigT8baxJQ-nTCKpMsdfyuptP5TsrDqAeRCKcuorIV_bMBNtNxw_j7S826RgQ_qIPr5ubRZKt8eovqpN2UhU5RNRBNFKxIbc5ykR_RpSuZ8"
+            src={ROBOT_MASCOT_SRC}
             alt="robot mascot"
             class="robot-img"
           />
         </div>
         <div class="robot-status-pill">
           <span class="status-dot"></span>
-          <span class="status-text">[ SYSTEM V3.0 ONLINE ]</span>
           <button id="mute-btn" class="mute-btn" title="关闭音效" aria-label="切换音效">♪</button>
         </div>
 
@@ -487,9 +487,9 @@ const dirs = [
   .robot-status-pill {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     background: color-mix(in srgb, var(--accent) 10%, transparent);
-    padding: 8px 20px;
+    padding: 7px 12px;
     border-radius: 999px;
     border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent);
   }
@@ -602,7 +602,6 @@ const dirs = [
   .path-host { color: var(--color-blue); }
   .dim       { color: var(--text-muted); }
   .prompt    { color: var(--color-green); user-select: none; }
-
   :global(.hl) {
     color: var(--color-yellow);
     font-weight: 700;

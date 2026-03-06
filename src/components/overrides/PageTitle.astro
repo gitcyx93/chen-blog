@@ -59,10 +59,14 @@ const tags: string[] = Array.isArray(data.tags) ? (data.tags as string[]) : [];
 
 <style>
   h1 {
-    margin-top: 0.5rem;
-    font-size: var(--sl-text-h1);
-    line-height: var(--sl-line-height-headings);
+    margin-top: 0.3rem;
+    margin-bottom: 0.95rem;
+    font-size: clamp(2.55rem, 4vw, 3.15rem);
+    line-height: 1.08;
     font-weight: 600;
     color: var(--sl-color-white);
+    max-width: 17.5ch;
+    text-wrap: balance;
+    letter-spacing: -0.028em;
   }
 </style>

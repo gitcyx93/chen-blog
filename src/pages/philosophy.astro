@@ -1,0 +1,43 @@
+---
+export const prerender = true;
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+import PhilosophyTree from '../components/PhilosophyTree';
+---
+
+<StarlightPage
+  frontmatter={{ title: '哲学谱系', description: '从古希腊到当代——主要哲学流派与代表人物的时间轴', tableOfContents: false }}
+  hasSidebar={false}
+  headings={[]}
+>
+  <div class="philosophy-page">
+    <p class="page-desc">从古希腊到当代 · Hover 哲学家查看详情</p>
+
+    <div class="tree-wrapper">
+      <PhilosophyTree client:load />
+    </div>
+  </div>
+</StarlightPage>
+
+<style>
+  /* Break out of Starlight's 44rem content column */
+  :global(.sl-markdown-content:has(.philosophy-page)) {
+    max-width: none;
+    padding: 0;
+  }
+
+  .philosophy-page {
+    width: 100%;
+  }
+
+  .page-desc {
+    font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.35);
+    margin: 0 0 1.5rem;
+  }
+
+  .tree-wrapper {
+    width: 100%;
+    overflow-x: auto;
+  }
+</style>

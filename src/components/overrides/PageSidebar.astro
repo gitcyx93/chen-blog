@@ -1,0 +1,823 @@
+---
+import MobileTableOfContents from 'virtual:starlight/components/MobileTableOfContents';
+import TableOfContents from 'virtual:starlight/components/TableOfContents';
+
+const robotParts = {
+  head: '/images/robot-parts/head.png',
+  torso: '/images/robot-parts/torso.png',
+  leftArm: '/images/robot-parts/left_arm.png',
+  rightArm: '/images/robot-parts/right_arm.png',
+  leftLeg: '/images/robot-parts/left_leg.png',
+  rightLeg: '/images/robot-parts/right_leg.png',
+};
+---
+
+{
+  Astro.locals.starlightRoute.toc && (
+    <>
+      <div class="lg:sl-hidden">
+        <MobileTableOfContents />
+      </div>
+
+      <div class="right-sidebar-panel sl-hidden lg:sl-block doc-toc-panel">
+        <div class="sl-container">
+          <TableOfContents />
+        </div>
+      </div>
+
+      <button
+        type="button"
+        class="doc-pet-widget sl-hidden lg:sl-flex"
+        aria-label="机器人桌宠"
+        data-doc-pet-widget
+      >
+        <span class="doc-pet-bubble" aria-hidden="true">
+          <span class="doc-pet-bubble-line" data-doc-pet-primary>robot / layered rig</span>
+          <span class="doc-pet-bubble-line is-muted" data-doc-pet-secondary>hover / click / dblclick</span>
+        </span>
+
+        <span class="doc-pet-shadow" aria-hidden="true"></span>
+
+        <span class="doc-pet-card" aria-hidden="true">
+          <span class="doc-pet-stage">
+            <span class="doc-pet-stage-glow"></span>
+
+            <img src={robotParts.leftLeg} alt="" class="doc-pet-part doc-pet-part-left-leg" loading="lazy" decoding="async" />
+            <img src={robotParts.rightLeg} alt="" class="doc-pet-part doc-pet-part-right-leg" loading="lazy" decoding="async" />
+            <img src={robotParts.torso} alt="" class="doc-pet-part doc-pet-part-torso" loading="lazy" decoding="async" />
+            <img src={robotParts.leftArm} alt="" class="doc-pet-part doc-pet-part-left-arm" loading="lazy" decoding="async" />
+            <img src={robotParts.rightArm} alt="" class="doc-pet-part doc-pet-part-right-arm" loading="lazy" decoding="async" />
+            <img src={robotParts.head} alt="" class="doc-pet-part doc-pet-part-head" loading="lazy" decoding="async" />
+
+            <span class="doc-pet-eye-glow doc-pet-eye-glow-left"></span>
+            <span class="doc-pet-eye-glow doc-pet-eye-glow-right"></span>
+          </span>
+
+          <span class="doc-pet-status-pill">
+            <span class="doc-pet-status-dot"></span>
+            <span class="doc-pet-status-glyph" data-doc-pet-glyph>›</span>
+          </span>
+        </span>
+      </button>
+    </>
+  )
+}
+
+<script>
+  const initDocPet = () => {
+    const widget = document.querySelector<HTMLElement>('[data-doc-pet-widget]');
+    if (!widget || widget.dataset.bound === 'true') return;
+    const primaryLine = widget.querySelector<HTMLElement>('[data-doc-pet-primary]');
+    const secondaryLine = widget.querySelector<HTMLElement>('[data-doc-pet-secondary]');
+    const glyph = widget.querySelector<HTMLElement>('[data-doc-pet-glyph]');
+    const COPY_DEFAULT = ['robot / layered rig', 'hover / click / dblclick'] as const;
+    const COPY_FOCUS = ['nav sentinel online', 'toc guard / tracking'] as const;
+    const COPY_SALUTE = ['acknowledged', 'salute protocol'] as const;
+    const COPY_ALERT = ['easter sequence', 'threat scan / armed'] as const;
+    const COPY_COOLDOWN = ['cooldown active', 'wait 3s before alert'] as const;
+
+    widget.dataset.bound = 'true';
+    let clickTimer: number | null = null;
+    let wakeTimer: number | null = null;
+    let glitchTimer: number | null = null;
+    let bubbleTimer: number | null = null;
+    let lastAlertAt = -Infinity;
+    const stateTimers = new Map<string, number>();
+    const ALERT_COOLDOWN_MS = 3000;
+
+    const setBubble = (primary: string, secondary: string, glyphText = '›', duration?: number) => {
+      if (primaryLine) primaryLine.textContent = primary;
+      if (secondaryLine) secondaryLine.textContent = secondary;
+      if (glyph) glyph.textContent = glyphText;
+      if (bubbleTimer !== null) {
+        clearTimeout(bubbleTimer);
+        bubbleTimer = null;
+      }
+      if (duration !== undefined) {
+        bubbleTimer = window.setTimeout(() => {
+          const focused = widget.classList.contains('is-focused');
+          const [p, s] = focused ? COPY_FOCUS : COPY_DEFAULT;
+          if (primaryLine) primaryLine.textContent = p;
+          if (secondaryLine) secondaryLine.textContent = s;
+          if (glyph) glyph.textContent = focused ? '~' : '›';
+          bubbleTimer = null;
+        }, duration);
+      }
+    };
+
+    const resetPose = () => {
+      widget.style.setProperty('--doc-pet-rotate-x', '0deg');
+      widget.style.setProperty('--doc-pet-rotate-y', '0deg');
+      widget.style.setProperty('--doc-pet-shift-x', '0px');
+      widget.style.setProperty('--doc-pet-shift-y', '0px');
+      widget.style.setProperty('--doc-pet-head-x', '0px');
+      widget.style.setProperty('--doc-pet-head-tilt', '0deg');
+      widget.style.setProperty('--doc-pet-torso-tilt', '0deg');
+      widget.style.setProperty('--doc-pet-left-arm-boost', '0deg');
+      widget.style.setProperty('--doc-pet-right-arm-boost', '0deg');
+    };
+
+    const setPose = (clientX: number, clientY: number) => {
+      const rect = widget.getBoundingClientRect();
+      const nx = (clientX - rect.left) / rect.width - 0.5;
+      const ny = (clientY - rect.top) / rect.height - 0.5;
+      widget.style.setProperty('--doc-pet-rotate-x', `${(-ny * 7).toFixed(2)}deg`);
+      widget.style.setProperty('--doc-pet-rotate-y', `${(nx * 9).toFixed(2)}deg`);
+      widget.style.setProperty('--doc-pet-shift-x', `${(nx * 8).toFixed(2)}px`);
+      widget.style.setProperty('--doc-pet-shift-y', `${(ny * 5).toFixed(2)}px`);
+      widget.style.setProperty('--doc-pet-head-x', `${(nx * 4).toFixed(2)}px`);
+      widget.style.setProperty('--doc-pet-head-tilt', `${(nx * 7).toFixed(2)}deg`);
+      widget.style.setProperty('--doc-pet-torso-tilt', `${(nx * 3).toFixed(2)}deg`);
+      widget.style.setProperty('--doc-pet-left-arm-boost', `${(-ny * 3 - nx * 2).toFixed(2)}deg`);
+      widget.style.setProperty('--doc-pet-right-arm-boost', `${(-ny * 8 + nx * 5).toFixed(2)}deg`);
+    };
+
+    const wakeUp = () => {
+      widget.classList.remove('is-awake');
+      void widget.offsetWidth;
+      widget.classList.add('is-awake');
+      if (wakeTimer !== null) clearTimeout(wakeTimer);
+      wakeTimer = window.setTimeout(() => {
+        widget.classList.remove('is-awake');
+        wakeTimer = null;
+      }, 1200);
+    };
+
+    const pulseState = (className: string, duration: number) => {
+      widget.classList.remove(className);
+      void widget.offsetWidth;
+      widget.classList.add(className);
+      const prev = stateTimers.get(className);
+      if (prev !== undefined) clearTimeout(prev);
+      const timer = window.setTimeout(() => {
+        widget.classList.remove(className);
+        stateTimers.delete(className);
+      }, duration);
+      stateTimers.set(className, timer);
+    };
+
+    const salute = () => {
+      wakeUp();
+      pulseState('is-saluting', 760);
+      setBubble(COPY_SALUTE[0], COPY_SALUTE[1], '!', 900);
+    };
+
+    const alert = () => {
+      wakeUp();
+      pulseState('is-alert', 940);
+      glitch();
+      setBubble(COPY_ALERT[0], COPY_ALERT[1], '*', 1400);
+    };
+
+    const glitch = () => {
+      widget.classList.remove('is-glitching');
+      void widget.offsetWidth;
+      widget.classList.add('is-glitching');
+      if (glitchTimer !== null) clearTimeout(glitchTimer);
+      glitchTimer = window.setTimeout(() => {
+        widget.classList.remove('is-glitching');
+        glitchTimer = null;
+      }, 580);
+    };
+
+    resetPose();
+    setBubble(COPY_DEFAULT[0], COPY_DEFAULT[1], '›');
+
+    widget.addEventListener('pointermove', (event) => {
+      setPose(event.clientX, event.clientY);
+    });
+
+    widget.addEventListener('pointerenter', () => {
+      widget.classList.add('is-focused');
+      setBubble(COPY_FOCUS[0], COPY_FOCUS[1], '~');
+    });
+
+    widget.addEventListener('pointerleave', () => {
+      widget.classList.remove('is-focused');
+      resetPose();
+      setBubble(COPY_DEFAULT[0], COPY_DEFAULT[1], '›');
+    });
+
+    widget.addEventListener('click', () => {
+      if (clickTimer !== null) return;
+      clickTimer = window.setTimeout(() => {
+        clickTimer = null;
+        salute();
+      }, 220);
+    });
+
+    widget.addEventListener('dblclick', (event) => {
+      event.preventDefault();
+      if (clickTimer !== null) {
+        clearTimeout(clickTimer);
+        clickTimer = null;
+      }
+      const now = performance.now();
+      if (now - lastAlertAt < ALERT_COOLDOWN_MS) {
+        setBubble(COPY_COOLDOWN[0], COPY_COOLDOWN[1], '·', 1200);
+        return;
+      }
+      lastAlertAt = now;
+      alert();
+    });
+
+    widget.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        salute();
+      }
+    });
+  };
+
+  initDocPet();
+  document.addEventListener('astro:page-load', initDocPet);
+</script>
+
+<style>
+  .doc-pet-widget {
+    --doc-pet-rotate-x: 0deg;
+    --doc-pet-rotate-y: 0deg;
+    --doc-pet-shift-x: 0px;
+    --doc-pet-shift-y: 0px;
+    --doc-pet-head-x: 0px;
+    --doc-pet-head-tilt: 0deg;
+    --doc-pet-torso-tilt: 0deg;
+    --doc-pet-left-arm-boost: 0deg;
+    --doc-pet-right-arm-boost: 0deg;
+    position: fixed;
+    inset-inline-end: max(1rem, env(safe-area-inset-right));
+    bottom: max(1rem, env(safe-area-inset-bottom));
+    z-index: calc(var(--sl-z-index-toc) + 2);
+    width: 7.1rem;
+    height: 8.95rem;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    pointer-events: auto;
+  }
+
+  .doc-pet-bubble {
+    position: absolute;
+    right: calc(100% - 0.45rem);
+    bottom: 5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.18rem;
+    min-width: 10.25rem;
+    padding: 0.62rem 0.82rem;
+    border: 1px solid color-mix(in srgb, var(--accent) 18%, transparent);
+    border-radius: 0.95rem;
+    background: color-mix(in srgb, var(--bg-elevated) 92%, transparent);
+    box-shadow: 0 16px 38px rgba(0, 0, 0, 0.22);
+    backdrop-filter: blur(10px);
+    opacity: 0;
+    transform: translateY(0.35rem);
+    pointer-events: none;
+    transition: opacity 0.18s ease, transform 0.18s ease;
+  }
+
+  .doc-pet-widget:hover .doc-pet-bubble,
+  .doc-pet-widget:focus-visible .doc-pet-bubble,
+  .doc-pet-widget.is-awake .doc-pet-bubble,
+  .doc-pet-widget.is-glitching .doc-pet-bubble {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .doc-pet-bubble-line {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 0.66rem;
+    line-height: 1.25;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+
+  .doc-pet-bubble-line.is-muted {
+    color: var(--text-muted);
+  }
+
+  .doc-pet-shadow {
+    position: absolute;
+    left: 1.1rem;
+    bottom: 0.82rem;
+    width: 5rem;
+    height: 1rem;
+    border-radius: 999px;
+    background: radial-gradient(circle, rgba(0, 0, 0, 0.38) 0%, rgba(0, 0, 0, 0) 72%);
+    animation: doc-pet-shadow-pulse 4.2s ease-in-out infinite;
+  }
+
+  .doc-pet-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.62rem;
+    animation: doc-pet-float 4.2s ease-in-out infinite;
+    transform-style: preserve-3d;
+    transform:
+      translate3d(var(--doc-pet-shift-x), var(--doc-pet-shift-y), 0)
+      rotateX(var(--doc-pet-rotate-x))
+      rotateY(var(--doc-pet-rotate-y));
+    transition: transform 0.14s ease, filter 0.18s ease;
+  }
+
+  .doc-pet-stage {
+    position: relative;
+    width: 5.8rem;
+    height: 5.8rem;
+    border-radius: 1rem;
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--accent) 24%, transparent);
+    background:
+      radial-gradient(circle at 50% 50%, rgba(38, 147, 181, 0.28) 0%, rgba(10, 17, 24, 0) 44%),
+      linear-gradient(180deg, #081015 0%, #0b1116 100%);
+    box-shadow:
+      0 18px 44px rgba(0, 0, 0, 0.34),
+      0 0 0 1px color-mix(in srgb, var(--accent) 12%, transparent);
+  }
+
+  .doc-pet-stage::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      transparent 25%,
+      color-mix(in srgb, var(--accent) 7%, transparent) 50%,
+      transparent 75%
+    );
+    animation: doc-pet-scan-sweep 3.5s linear infinite;
+    pointer-events: none;
+    z-index: 7;
+  }
+
+  .doc-pet-stage-glow {
+    position: absolute;
+    left: 50%;
+    bottom: 0.4rem;
+    width: 2.2rem;
+    height: 0.72rem;
+    margin-left: -1.1rem;
+    border-radius: 999px;
+    background: radial-gradient(circle, color-mix(in srgb, var(--accent) 58%, transparent) 0%, rgba(0, 0, 0, 0) 74%);
+    opacity: 0.45;
+    filter: blur(1px);
+    z-index: 1;
+  }
+
+  .doc-pet-widget:hover .doc-pet-stage,
+  .doc-pet-widget:focus-visible .doc-pet-stage,
+  .doc-pet-widget.is-awake .doc-pet-stage {
+    border-color: color-mix(in srgb, var(--accent) 44%, transparent);
+    box-shadow:
+      0 20px 48px rgba(0, 0, 0, 0.36),
+      0 0 0 1px color-mix(in srgb, var(--accent) 30%, transparent),
+      0 0 24px color-mix(in srgb, var(--accent) 18%, transparent);
+  }
+
+  .doc-pet-part {
+    position: absolute;
+    display: block;
+    user-select: none;
+    pointer-events: none;
+    will-change: transform;
+    filter: drop-shadow(0 0 0.35rem rgba(0, 0, 0, 0.12));
+  }
+
+  .doc-pet-part-head {
+    left: 35.15625%;
+    top: 16.6015625%;
+    width: 35.3515625%;
+    transform-origin: 50% 88%;
+    animation: doc-pet-head-idle 3.6s ease-in-out infinite;
+    z-index: 6;
+  }
+
+  .doc-pet-part-torso {
+    left: 29.296875%;
+    top: 41.796875%;
+    width: 39.84375%;
+    transform-origin: 50% 16%;
+    animation: doc-pet-torso-idle 3.6s ease-in-out infinite;
+    z-index: 4;
+  }
+
+  .doc-pet-part-left-arm {
+    left: 26.5625%;
+    top: 48.6328125%;
+    width: 12.3046875%;
+    transform-origin: 80% 8%;
+    animation: doc-pet-left-arm-idle 3.2s ease-in-out infinite;
+    z-index: 5;
+  }
+
+  .doc-pet-part-right-arm {
+    left: 64.453125%;
+    top: 40.234375%;
+    width: 12.109375%;
+    transform-origin: 18% 12%;
+    animation: doc-pet-right-arm-idle 2.8s ease-in-out infinite;
+    z-index: 5;
+  }
+
+  .doc-pet-part-left-leg {
+    left: 29.296875%;
+    top: 65.234375%;
+    width: 22.65625%;
+    transform-origin: 50% 8%;
+    animation: doc-pet-left-leg-idle 3.6s ease-in-out infinite;
+    z-index: 2;
+  }
+
+  .doc-pet-part-right-leg {
+    left: 47.265625%;
+    top: 65.234375%;
+    width: 24.609375%;
+    transform-origin: 50% 8%;
+    animation: doc-pet-right-leg-idle 3.6s ease-in-out infinite -1.8s;
+    z-index: 2;
+  }
+
+  .doc-pet-widget.is-focused .doc-pet-part-head {
+    animation-duration: 1.7s;
+  }
+
+  .doc-pet-widget.is-focused .doc-pet-part-right-arm {
+    animation: doc-pet-right-arm-focus 0.95s ease-in-out infinite;
+  }
+
+  .doc-pet-widget.is-focused .doc-pet-part-torso {
+    animation-duration: 1.9s;
+  }
+
+  .doc-pet-eye-glow {
+    position: absolute;
+    width: 0.82rem;
+    height: 0.82rem;
+    border-radius: 999px;
+    background: radial-gradient(circle, color-mix(in srgb, white 68%, var(--accent) 32%) 0%, color-mix(in srgb, var(--accent) 92%, transparent) 50%, transparent 78%);
+    opacity: 0.34;
+    mix-blend-mode: screen;
+    filter: blur(1px);
+    animation: doc-pet-eye-pulse 2.2s ease-in-out infinite;
+    z-index: 6;
+  }
+
+  .doc-pet-eye-glow-left {
+    left: 1.56rem;
+    top: 1.96rem;
+  }
+
+  .doc-pet-eye-glow-right {
+    left: 2.9rem;
+    top: 1.96rem;
+    animation-delay: 0.1s;
+  }
+
+  .doc-pet-widget:hover .doc-pet-eye-glow,
+  .doc-pet-widget:focus-visible .doc-pet-eye-glow,
+  .doc-pet-widget.is-awake .doc-pet-eye-glow {
+    opacity: 0.58;
+  }
+
+  .doc-pet-status-pill {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.3rem 0.62rem;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent);
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.16);
+  }
+
+  .doc-pet-status-dot {
+    width: 0.42rem;
+    height: 0.42rem;
+    border-radius: 999px;
+    background: var(--accent);
+    box-shadow: 0 0 10px color-mix(in srgb, var(--accent) 36%, transparent);
+    animation: doc-pet-status-pulse 2s ease-in-out infinite;
+  }
+
+  .doc-pet-status-glyph {
+    color: var(--accent);
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 0.82rem;
+    line-height: 1;
+    opacity: 0.72;
+  }
+
+  .doc-pet-widget.is-awake .doc-pet-part-head {
+    animation: doc-pet-head-awake 0.48s ease-out 2;
+  }
+
+  .doc-pet-widget.is-awake .doc-pet-part-right-arm {
+    animation: doc-pet-wave 0.52s ease-in-out 2;
+  }
+
+  .doc-pet-widget.is-awake .doc-pet-part-torso {
+    animation: doc-pet-torso-awake 0.42s ease-out 2;
+  }
+
+  .doc-pet-widget.is-saluting .doc-pet-part-head {
+    animation: doc-pet-salute-head 0.72s ease-out 1 forwards;
+  }
+
+  .doc-pet-widget.is-saluting .doc-pet-part-right-arm {
+    animation: doc-pet-salute-arm 0.72s ease-out 1 forwards;
+  }
+
+  .doc-pet-widget.is-saluting .doc-pet-part-torso {
+    animation: doc-pet-salute-torso 0.72s ease-out 1 forwards;
+  }
+
+  .doc-pet-widget.is-alert .doc-pet-part-head {
+    animation: doc-pet-alert-head 0.9s ease-in-out 1 forwards;
+  }
+
+  .doc-pet-widget.is-alert .doc-pet-part-left-arm {
+    animation: doc-pet-alert-left-arm 0.9s ease-in-out 1 forwards;
+  }
+
+  .doc-pet-widget.is-alert .doc-pet-part-right-arm {
+    animation: doc-pet-alert-right-arm 0.9s ease-in-out 1 forwards;
+  }
+
+  .doc-pet-widget.is-alert .doc-pet-part-torso {
+    animation: doc-pet-alert-torso 0.9s ease-in-out 1 forwards;
+  }
+
+  .doc-pet-widget.is-alert .doc-pet-eye-glow {
+    animation: doc-pet-alert-eye 0.9s ease-in-out 1;
+  }
+
+  .doc-pet-widget.is-saluting .doc-pet-status-pill {
+    animation: doc-pet-pill-salute 0.72s ease-out 1;
+  }
+
+  .doc-pet-widget.is-alert .doc-pet-card {
+    animation: doc-pet-card-alert 0.94s ease-in-out 1;
+  }
+
+  .doc-pet-widget.is-alert .doc-pet-stage-glow {
+    animation: doc-pet-stage-flare 0.94s ease-in-out 1;
+  }
+
+  .doc-pet-widget.is-alert .doc-pet-shadow {
+    animation: doc-pet-shadow-alert 0.94s ease-in-out 1;
+  }
+
+  .doc-pet-widget.is-alert .doc-pet-status-pill {
+    animation: doc-pet-pill-alert 0.94s ease-in-out 1;
+  }
+
+  .doc-pet-widget.is-glitching .doc-pet-stage {
+    filter: hue-rotate(12deg) saturate(1.18);
+  }
+
+  .doc-pet-widget.is-glitching .doc-pet-part,
+  .doc-pet-widget.is-glitching .doc-pet-eye-glow {
+    animation: doc-pet-glitch 0.44s steps(1) 1;
+  }
+
+  @keyframes doc-pet-float {
+    0%, 100% {
+      transform:
+        translate3d(var(--doc-pet-shift-x), var(--doc-pet-shift-y), 0)
+        rotateX(var(--doc-pet-rotate-x))
+        rotateY(var(--doc-pet-rotate-y));
+    }
+    50% {
+      transform:
+        translate3d(var(--doc-pet-shift-x), calc(var(--doc-pet-shift-y) - 0.18rem), 0)
+        rotateX(var(--doc-pet-rotate-x))
+        rotateY(var(--doc-pet-rotate-y));
+    }
+  }
+
+  @keyframes doc-pet-card-alert {
+    0%, 100% {
+      transform:
+        translate3d(var(--doc-pet-shift-x), var(--doc-pet-shift-y), 0)
+        rotateX(var(--doc-pet-rotate-x))
+        rotateY(var(--doc-pet-rotate-y));
+    }
+    22% {
+      transform:
+        translate3d(calc(var(--doc-pet-shift-x) - 1px), calc(var(--doc-pet-shift-y) - 0.14rem), 0)
+        rotateX(calc(var(--doc-pet-rotate-x) - 2deg))
+        rotateY(calc(var(--doc-pet-rotate-y) - 5deg));
+    }
+    48% {
+      transform:
+        translate3d(calc(var(--doc-pet-shift-x) + 1px), calc(var(--doc-pet-shift-y) + 0.02rem), 0)
+        rotateX(calc(var(--doc-pet-rotate-x) + 1deg))
+        rotateY(calc(var(--doc-pet-rotate-y) + 6deg));
+    }
+    72% {
+      transform:
+        translate3d(var(--doc-pet-shift-x), calc(var(--doc-pet-shift-y) - 0.06rem), 0)
+        rotateX(var(--doc-pet-rotate-x))
+        rotateY(calc(var(--doc-pet-rotate-y) - 2deg));
+    }
+  }
+
+  @keyframes doc-pet-head-idle {
+    0%, 18% { transform: translateX(var(--doc-pet-head-x)) rotate(calc(-4deg + var(--doc-pet-head-tilt))) translateY(0); }
+    28%, 46% { transform: translateX(calc(var(--doc-pet-head-x) + 1px)) rotate(calc(1deg + var(--doc-pet-head-tilt))) translateY(-0.02rem); }
+    56%, 80% { transform: translateX(calc(var(--doc-pet-head-x) - 1px)) rotate(calc(4deg + var(--doc-pet-head-tilt))) translateY(0); }
+    100% { transform: translateX(var(--doc-pet-head-x)) rotate(calc(-4deg + var(--doc-pet-head-tilt))) translateY(0); }
+  }
+
+  @keyframes doc-pet-head-awake {
+    0%, 100% { transform: translateX(var(--doc-pet-head-x)) rotate(calc(0deg + var(--doc-pet-head-tilt))) translateY(0); }
+    35% { transform: translateX(var(--doc-pet-head-x)) rotate(calc(-8deg + var(--doc-pet-head-tilt))) translateY(-0.09rem); }
+    70% { transform: translateX(var(--doc-pet-head-x)) rotate(calc(5deg + var(--doc-pet-head-tilt))) translateY(0.02rem); }
+  }
+
+  @keyframes doc-pet-torso-idle {
+    0%, 20% { transform: translateY(0) rotate(calc(-1.6deg - var(--doc-pet-torso-tilt))) scaleY(1); }
+    34%, 58% { transform: translateY(-0.03rem) rotate(calc(0.8deg - var(--doc-pet-torso-tilt))) scaleY(1.01); }
+    70%, 100% { transform: translateY(0) rotate(calc(1.6deg - var(--doc-pet-torso-tilt))) scaleY(1); }
+  }
+
+  @keyframes doc-pet-torso-awake {
+    0%, 100% { transform: translateY(0) rotate(calc(0deg - var(--doc-pet-torso-tilt))) scale(1); }
+    40% { transform: translateY(-0.08rem) rotate(calc(-3deg - var(--doc-pet-torso-tilt))) scale(0.985, 1.015); }
+    70% { transform: translateY(0.02rem) rotate(calc(2deg - var(--doc-pet-torso-tilt))) scale(1.012, 0.99); }
+  }
+
+  @keyframes doc-pet-left-arm-idle {
+    0%, 24% { transform: rotate(calc(6deg + var(--doc-pet-left-arm-boost))); }
+    36%, 72% { transform: rotate(calc(13deg + var(--doc-pet-left-arm-boost))); }
+    100% { transform: rotate(calc(6deg + var(--doc-pet-left-arm-boost))); }
+  }
+
+  @keyframes doc-pet-right-arm-idle {
+    0%, 28% { transform: rotate(calc(-9deg + var(--doc-pet-right-arm-boost))); }
+    44%, 70% { transform: rotate(calc(-22deg + var(--doc-pet-right-arm-boost))); }
+    100% { transform: rotate(calc(-9deg + var(--doc-pet-right-arm-boost))); }
+  }
+
+  @keyframes doc-pet-right-arm-focus {
+    0%, 100% { transform: rotate(calc(-18deg + var(--doc-pet-right-arm-boost))); }
+    50% { transform: rotate(calc(-34deg + var(--doc-pet-right-arm-boost))); }
+  }
+
+  @keyframes doc-pet-wave {
+    0%, 100% { transform: rotate(calc(-12deg + var(--doc-pet-right-arm-boost))); }
+    50% { transform: rotate(calc(-34deg + var(--doc-pet-right-arm-boost))); }
+  }
+
+  @keyframes doc-pet-salute-head {
+    0% { transform: translateX(var(--doc-pet-head-x)) rotate(calc(-2deg + var(--doc-pet-head-tilt))) translateY(0); }
+    35% { transform: translateX(var(--doc-pet-head-x)) rotate(calc(-9deg + var(--doc-pet-head-tilt))) translateY(-0.08rem); }
+    100% { transform: translateX(var(--doc-pet-head-x)) rotate(calc(-4deg + var(--doc-pet-head-tilt))) translateY(0); }
+  }
+
+  @keyframes doc-pet-salute-arm {
+    0% { transform: rotate(calc(-12deg + var(--doc-pet-right-arm-boost))); }
+    42% { transform: rotate(calc(-52deg + var(--doc-pet-right-arm-boost))) translateY(-0.02rem); }
+    100% { transform: rotate(calc(-28deg + var(--doc-pet-right-arm-boost))); }
+  }
+
+  @keyframes doc-pet-salute-torso {
+    0% { transform: translateY(0) rotate(calc(0deg - var(--doc-pet-torso-tilt))) scale(1); }
+    40% { transform: translateY(-0.06rem) rotate(calc(-4deg - var(--doc-pet-torso-tilt))) scale(0.99, 1.01); }
+    100% { transform: translateY(0) rotate(calc(-1deg - var(--doc-pet-torso-tilt))) scale(1); }
+  }
+
+  @keyframes doc-pet-alert-head {
+    0% { transform: translateX(var(--doc-pet-head-x)) rotate(calc(0deg + var(--doc-pet-head-tilt))) translateY(0); }
+    18% { transform: translateX(calc(var(--doc-pet-head-x) - 2px)) rotate(calc(-10deg + var(--doc-pet-head-tilt))) translateY(-0.05rem); }
+    45% { transform: translateX(calc(var(--doc-pet-head-x) + 2px)) rotate(calc(9deg + var(--doc-pet-head-tilt))) translateY(-0.02rem); }
+    100% { transform: translateX(var(--doc-pet-head-x)) rotate(calc(3deg + var(--doc-pet-head-tilt))) translateY(0); }
+  }
+
+  @keyframes doc-pet-alert-left-arm {
+    0% { transform: rotate(calc(6deg + var(--doc-pet-left-arm-boost))); }
+    40% { transform: rotate(calc(22deg + var(--doc-pet-left-arm-boost))); }
+    100% { transform: rotate(calc(12deg + var(--doc-pet-left-arm-boost))); }
+  }
+
+  @keyframes doc-pet-alert-right-arm {
+    0% { transform: rotate(calc(-10deg + var(--doc-pet-right-arm-boost))); }
+    40% { transform: rotate(calc(-44deg + var(--doc-pet-right-arm-boost))) translateY(-0.03rem); }
+    100% { transform: rotate(calc(-24deg + var(--doc-pet-right-arm-boost))); }
+  }
+
+  @keyframes doc-pet-alert-torso {
+    0% { transform: translateY(0) rotate(calc(0deg - var(--doc-pet-torso-tilt))) scale(1); }
+    30% { transform: translateY(-0.08rem) rotate(calc(-5deg - var(--doc-pet-torso-tilt))) scale(0.985, 1.018); }
+    62% { transform: translateY(0.03rem) rotate(calc(4deg - var(--doc-pet-torso-tilt))) scale(1.015, 0.99); }
+    100% { transform: translateY(0) rotate(calc(1deg - var(--doc-pet-torso-tilt))) scale(1); }
+  }
+
+  @keyframes doc-pet-alert-eye {
+    0%, 100% { transform: scale(1); opacity: 0.34; }
+    20% { transform: scale(1.45); opacity: 0.96; }
+    50% { transform: scale(1.2); opacity: 0.7; }
+    70% { transform: scale(1.38); opacity: 0.88; }
+  }
+
+  @keyframes doc-pet-stage-flare {
+    0%, 100% { opacity: 0.45; transform: scale(1); }
+    28% { opacity: 0.95; transform: scale(1.2); }
+    58% { opacity: 0.7; transform: scale(1.08); }
+  }
+
+  @keyframes doc-pet-shadow-alert {
+    0%, 100% { transform: scaleX(1); opacity: 0.42; }
+    25% { transform: scaleX(1.14); opacity: 0.56; }
+    55% { transform: scaleX(0.92); opacity: 0.3; }
+  }
+
+  @keyframes doc-pet-pill-salute {
+    0%, 100% { transform: translateY(0); }
+    35% { transform: translateY(-0.12rem); }
+    68% { transform: translateY(0.03rem); }
+  }
+
+  @keyframes doc-pet-pill-alert {
+    0%, 100% { transform: translateY(0) scale(1); }
+    22% { transform: translateY(-0.08rem) scale(1.06); }
+    52% { transform: translateY(0.02rem) scale(0.96); }
+    76% { transform: translateY(-0.03rem) scale(1.03); }
+  }
+
+  @keyframes doc-pet-left-leg-idle {
+    0%, 40%, 100% { transform: rotate(0deg) translateY(0); }
+    20% { transform: rotate(1deg) translateY(0.04rem); }
+    70% { transform: rotate(-0.6deg) translateY(0.02rem); }
+  }
+
+  @keyframes doc-pet-right-leg-idle {
+    0%, 40%, 100% { transform: rotate(0deg) translateY(0); }
+    20% { transform: rotate(-1deg) translateY(0.04rem); }
+    70% { transform: rotate(0.6deg) translateY(0.02rem); }
+  }
+
+  @keyframes doc-pet-glitch {
+    0% { transform: translateX(0); filter: none; }
+    18% { transform: translateX(3px); filter: hue-rotate(28deg) brightness(1.25); }
+    36% { transform: translateX(-4px); filter: hue-rotate(-18deg) saturate(1.6); }
+    62% { transform: translateX(2px); filter: brightness(1.18) contrast(1.14); }
+    100% { transform: translateX(0); filter: none; }
+  }
+
+  @keyframes doc-pet-scan-sweep {
+    from { transform: translateY(-100%); }
+    to { transform: translateY(200%); }
+  }
+
+  @keyframes doc-pet-eye-pulse {
+    0%, 100% { transform: scale(1); opacity: 0.34; }
+    50% { transform: scale(1.16); opacity: 0.58; }
+  }
+
+  @keyframes doc-pet-shadow-pulse {
+    0%, 100% { transform: scaleX(1); opacity: 0.42; }
+    50% { transform: scaleX(0.9); opacity: 0.26; }
+  }
+
+  @keyframes doc-pet-status-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.35; }
+  }
+
+  @media (max-width: 90rem) {
+    .doc-pet-widget {
+      width: 6.55rem;
+      height: 8.3rem;
+    }
+
+    .doc-pet-stage {
+      width: 5.15rem;
+      height: 5.15rem;
+    }
+
+    .doc-pet-eye-glow-left {
+      left: 1.38rem;
+      top: 1.74rem;
+    }
+
+    .doc-pet-eye-glow-right {
+      left: 2.57rem;
+      top: 1.74rem;
+    }
+
+    .doc-pet-bubble {
+      min-width: 9.4rem;
+      right: calc(100% - 0.2rem);
+      bottom: 4.55rem;
+    }
+  }
+</style>

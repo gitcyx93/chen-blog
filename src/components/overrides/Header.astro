@@ -15,7 +15,7 @@ const dirs = segments.slice(0, -1);
 
 const p = Astro.url.pathname;
 const isNotes = p.startsWith('/notes') ||
-  (!p.startsWith('/blog') && !p.startsWith('/tools') && !p.startsWith('/read-me') && !p.startsWith('/contact') && p !== '/');
+  (!p.startsWith('/blog') && !p.startsWith('/tools') && !p.startsWith('/read-me') && !p.startsWith('/contact') && !p.startsWith('/philosophy') && p !== '/');
 ---
 
 <div class="header-wrapper">
@@ -27,8 +27,9 @@ const isNotes = p.startsWith('/notes') ||
         <a href="/"                       class={p === '/'                ? 'active' : ''}>首页</a>
         <a href="/blog"                   class={p.startsWith('/blog')    ? 'active' : ''}>文章</a>
         <a href="/notes"                  class={isNotes                  ? 'active' : ''}>笔记</a>
-        <a href="/tools"                  class={p.startsWith('/tools')   ? 'active' : ''}>工具箱</a>
-        <a href="/read-me/"               class={p.startsWith('/read-me') ? 'active' : ''}>Read Me</a>
+        <a href="/tools"                  class={p.startsWith('/tools')       ? 'active' : ''}>工具箱</a>
+        <a href="/philosophy"             class={p.startsWith('/philosophy')  ? 'active' : ''}>哲学</a>
+        <a href="/read-me/"               class={p.startsWith('/read-me')     ? 'active' : ''}>Read Me</a>
       </nav>
     </div>
     <div class="nav-actions">

@@ -1,0 +1,6 @@
+head:180,85
+torso:150,214
+left_arm:136,249
+right_arm:330,206
+left_leg:150,334
+right_leg:242,334

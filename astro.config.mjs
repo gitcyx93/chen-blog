@@ -41,6 +41,8 @@ export default defineConfig({
         ContentPanel: './src/components/overrides/ContentPanel.astro',
         // 只保留 H1（路径已移至 Header）
         PageTitle: './src/components/overrides/PageTitle.astro',
+        // 文档页右侧：静默桌宠 + 按需展开目录
+        PageSidebar: './src/components/overrides/PageSidebar.astro',
       },
     }),
     wikiLinksIntegration(),   // Obsidian [[双链]] + 反向链接索引

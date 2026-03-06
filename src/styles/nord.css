@@ -236,10 +236,12 @@ header.header::before {
 
 /* 激活项（仅侧栏） */
 [class*="sidebar"] [aria-current='page'] {
-  background-color: color-mix(in srgb, var(--accent-dim) 20%, transparent) !important;
-  color: var(--accent) !important;
+  background-color: color-mix(in srgb, var(--accent-dim) 11%, transparent) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid color-mix(in srgb, var(--accent) 18%, transparent) !important;
   border-inline-start-color: transparent !important;
   opacity: 1 !important;
+  box-shadow: none !important;
 }
 
 /* 侧栏目录符号：开关 + 文件夹图标 */
@@ -386,31 +388,34 @@ nav.sidebar {
 }
 
 /* ===================================================
-   右侧 TOC：弱化存在感（更窄 + 极轻分隔线）
+   右侧 TOC：常驻可用，桌宠独立固定在右下角
    =================================================== */
 @media (min-width: 72rem) {
-  /* 取消右侧 TOC 在文档流中的大块占位，仅保留固定浮层 */
+  html[data-has-sidebar][data-has-toc] {
+    --doc-toc-width: clamp(10rem, 11vw, 11.5rem);
+    --doc-toc-reserve: calc(var(--doc-toc-width) + 1.5rem);
+  }
+
   html[data-has-sidebar][data-has-toc] .right-sidebar-container {
-    width: 0 !important;
-    min-width: 0 !important;
+    display: block !important;
+    width: var(--doc-toc-reserve) !important;
+    min-width: var(--doc-toc-reserve) !important;
     overflow: visible !important;
   }
 
-  /* 正文偏左：直接调整容器边距，而非视觉 transform */
   html[data-has-sidebar] .main-pane {
-    width: 100% !important;
+    width: calc(100% - var(--doc-toc-reserve, 0rem)) !important;
     --sl-content-margin-inline: auto;
+    --article-left-gutter: clamp(3.5rem, 4vw, 4rem);
   }
 
-  /* 左移强度：4rem（可继续调） */
   html[data-has-sidebar] .main-pane .content-panel .sl-container {
-    margin-inline-start: max(1rem, calc((100% - min(56rem, 100%)) / 2 - 4rem)) !important;
+    margin-inline-start: var(--article-left-gutter) !important;
     margin-inline-end: auto !important;
     transform: none;
   }
 
-  /* 右侧导航去底色，直接使用页面背景 */
-  .right-sidebar-container,
+  .right-sidebar,
   .right-sidebar-panel,
   .right-sidebar-panel .sl-container {
     background: transparent !important;
@@ -420,35 +425,47 @@ nav.sidebar {
   .right-sidebar {
     inset-inline-start: auto !important;
     inset-inline-end: 0 !important;
-    width: 11.5rem !important;
-    border-inline-start: 1px solid color-mix(in srgb, var(--border) 24%, transparent) !important;
+    width: var(--doc-toc-reserve, 0rem) !important;
+    border-inline-start: 1px solid color-mix(in srgb, var(--border) 16%, transparent) !important;
     background: transparent !important;
+    overflow: visible !important;
+    pointer-events: auto;
   }
 
   .right-sidebar-panel {
-    padding: 0.75rem 0.6rem 0.75rem 0.6rem !important;
-    opacity: 0.74;
+    display: block !important;
+    padding: 0.85rem 0.6rem 7.2rem 0 !important;
+    opacity: 0.72;
   }
 
   .right-sidebar-panel .sl-container {
-    width: 100% !important;
-    max-width: 100% !important;
-    margin-inline-start: 0 !important;
+    width: var(--doc-toc-width) !important;
+    max-width: var(--doc-toc-width) !important;
+    margin-inline-start: auto !important;
     margin-inline-end: 0 !important;
   }
 
   .right-sidebar-panel h2 {
     font-size: 0.78rem !important;
-    opacity: 0.64;
+    opacity: 0.62;
     letter-spacing: 0.02em;
   }
 
   .right-sidebar-panel :where(a) {
+    color: var(--text-muted) !important;
+    text-decoration: none !important;
     opacity: 0.72;
   }
 
   .right-sidebar-panel :where(a:hover) {
+    color: var(--text-primary) !important;
     opacity: 0.95;
+  }
+}
+
+@media (min-width: 100rem) {
+  html[data-has-sidebar] .main-pane {
+    --article-left-gutter: clamp(6rem, 8vw, 7.5rem);
   }
 }
 
@@ -477,9 +494,9 @@ nav.sidebar {
 .cat-prompt {
   font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
   font-size: 0.82rem;
-  margin-bottom: 0.85rem;
+  margin-bottom: 0.65rem;
   line-height: 1.5;
-  opacity: 0.9;
+  opacity: 0.72;
 }
 .cp-user { color: var(--color-green); }
 .cp-host { color: var(--color-blue); }
@@ -487,15 +504,17 @@ nav.sidebar {
 .cp-file { color: var(--text-body); }
 
 .frontmatter-card {
-  background: var(--bg-elevated);
+  background: color-mix(in srgb, var(--bg-elevated) 84%, transparent);
   border: 1px solid var(--border);
-  border-left: 3px solid var(--accent-dim);
+  border-left: 1px solid color-mix(in srgb, var(--accent-dim) 60%, transparent);
   border-radius: var(--radius);
-  padding: 0.6em 0.9em;
-  margin-bottom: 0.3rem;
+  padding: 0.52em 0.82em;
+  margin-bottom: 0.8rem;
   font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: 0.79rem;
-  line-height: 1.8;
+  font-size: 0.74rem;
+  line-height: 1.72;
+  max-width: 43rem;
+  opacity: 0.86;
 }
 .fm-sep  { color: var(--text-muted); }
 .fm-row  { display: flex; gap: 0.6em; align-items: baseline; flex-wrap: wrap; }
