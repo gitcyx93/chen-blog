@@ -5,13 +5,11 @@ import PhilosophyTree from '../components/PhilosophyTree';
 ---
 
 <StarlightPage
-  frontmatter={{ title: '哲学谱系', description: '从古希腊到当代——主要哲学流派与代表人物的时间轴', tableOfContents: false }}
+  frontmatter={{ title: '哲学谱系', description: '从古希腊到当代——主要哲学流派与代表人物的树状谱系图', tableOfContents: false }}
   hasSidebar={false}
   headings={[]}
 >
   <div class="philosophy-page">
-    <p class="page-desc">从古希腊到当代 · Hover 哲学家查看详情</p>
-
     <div class="tree-wrapper">
       <PhilosophyTree client:load />
     </div>
@@ -27,13 +25,6 @@ import PhilosophyTree from '../components/PhilosophyTree';
 
   .philosophy-page {
     width: 100%;
-  }
-
-  .page-desc {
-    font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
-    font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.35);
-    margin: 0 0 1.5rem;
   }
 
   .tree-wrapper {
